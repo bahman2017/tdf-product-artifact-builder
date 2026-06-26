@@ -1,0 +1,35 @@
+product_id: lithium_filter_candidate_v0_1
+product_type: phase_gated_bn_membrane_candidate
+target_behavior: Li/Na analog diagnostic separation
+source_artifacts:
+  - tdf-atomic-blueprint reviewable export contract
+  - tdf-openmm-validation stable diagnostic package (reference only)
+required_diagnostics:
+  - static structural sanity checks
+  - export contract validation
+  - claim-boundary certificate
+allowed_claims:
+  - phase-gated BN membrane candidate
+  - Li/Na analog diagnostic result
+  - reviewable design candidate
+  - conventional validation required
+forbidden_claims:
+  - proven lithium filter
+  - experimentally validated lithium selectivity
+  - production-ready membrane
+  - force-field-ready BN membrane
+  - simulation-ready membrane
+  - wet-lab-ready product
+  - battery performance claim
+readiness_stage: TDF_DESIGN_CANDIDATE
+reviewer_outputs:
+  - product_spec.yaml
+  - CLAIM_BOUNDARIES.md
+  - LIMITATIONS.md
+  - MANIFEST.json
+external_validation_requirements:
+  - conventional independent validation plan required before any simulation authorization
+  - external reviewer sign-off required before readiness stage advancement
+engine_hardcoded: false
+simulation_authorized: false
+wet_lab_ready: false

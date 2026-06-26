@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/review_summary.schema.json",
+  "title": "TDF Review Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_name",
+    "repository",
+    "branch",
+    "base_commit",
+    "head_commit",
+    "tests_run",
+    "tests_passed",
+    "ci_status",
+    "generated_outputs_tracked",
+    "raw_data_committed",
+    "claim_boundary_passed",
+    "product_readiness_stage",
+    "completed_work_updated",
+    "next_actions_updated",
+    "decision_log_updated",
+    "prompt_log_updated",
+    "cursor_feedback_log_updated",
+    "cto_review_zip_created",
+    "review_zip_path",
+    "known_risks",
+    "blockers",
+    "next_recommended_step"
+  ],
+  "properties": {
+    "task_name": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "minLength": 1 },
+    "branch": { "type": "string", "minLength": 1 },
+    "base_commit": { "type": "string", "minLength": 1 },
+    "head_commit": { "type": "string", "minLength": 1 },
+    "tests_run": { "type": "string", "minLength": 1 },
+    "tests_passed": { "type": "boolean" },
+    "ci_status": { "type": "string", "minLength": 1 },
+    "generated_outputs_tracked": { "type": "boolean" },
+    "raw_data_committed": { "type": "boolean" },
+    "claim_boundary_passed": { "type": "boolean" },
+    "product_readiness_stage": { "type": "string", "minLength": 1 },
+    "completed_work_updated": { "type": "boolean" },
+    "next_actions_updated": { "type": "boolean" },
+    "decision_log_updated": { "type": "boolean" },
+    "prompt_log_updated": { "type": "boolean" },
+    "cursor_feedback_log_updated": { "type": "boolean" },
+    "cto_review_zip_created": { "type": "boolean" },
+    "review_zip_path": { "type": "string" },
+    "known_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_recommended_step": { "type": "string", "minLength": 1 }
+  }
+}

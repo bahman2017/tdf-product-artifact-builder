@@ -1,0 +1,22 @@
+product_id: example_product_id
+product_type: example_product_type
+target_behavior: example target behavior
+source_artifacts:
+  - upstream artifact reference
+required_diagnostics:
+  - static diagnostic reference
+allowed_claims:
+  - reviewable design candidate
+  - conventional validation required
+forbidden_claims:
+  - simulation-ready membrane
+  - wet-lab-ready product
+readiness_stage: TDF_DESIGN_CANDIDATE
+reviewer_outputs:
+  - MANIFEST.json
+  - CLAIM_BOUNDARIES.md
+external_validation_requirements:
+  - conventional independent validation required
+engine_hardcoded: false
+simulation_authorized: false
+wet_lab_ready: false

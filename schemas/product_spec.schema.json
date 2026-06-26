@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/product_spec.schema.json",
+  "title": "TDF Product Spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "product_id",
+    "product_type",
+    "target_behavior",
+    "source_artifacts",
+    "required_diagnostics",
+    "allowed_claims",
+    "forbidden_claims",
+    "readiness_stage",
+    "reviewer_outputs",
+    "external_validation_requirements",
+    "engine_hardcoded",
+    "simulation_authorized",
+    "wet_lab_ready"
+  ],
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_behavior": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "required_diagnostics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "allowed_claims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbidden_claims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "readiness_stage": {
+      "type": "string",
+      "enum": [
+        "TDF_DESIGN_CANDIDATE",
+        "REVIEWABLE_ATOMIC_BLUEPRINT",
+        "DIAGNOSTIC_PREPARATION_PACKAGE",
+        "EXTERNAL_REVIEWER_PACKAGE",
+        "CONVENTIONAL_VALIDATION_PLAN",
+        "CONTROLLED_SIMULATION",
+        "WET_LAB_FABRICATION_READINESS"
+      ]
+    },
+    "reviewer_outputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "external_validation_requirements": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "engine_hardcoded": {
+      "type": "boolean",
+      "const": false
+    },
+    "simulation_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "wet_lab_ready": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}

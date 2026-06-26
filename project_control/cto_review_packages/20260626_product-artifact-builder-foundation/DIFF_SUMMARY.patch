@@ -1,0 +1,74 @@
+commit 35fdab4e67ef8ae02fa1aba35ae151238d4a9438
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 16:05:06 2026 -0700
+
+    Add product artifact builder foundation
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ .gitignore                                         |  20 ++
+ README.md                                          |  45 ++++
+ .../product_spec.yaml                              |  35 +++
+ project_control/CLAIM_BOUNDARIES.md                |  32 +++
+ project_control/COMPLETED_WORK.md                  |  21 ++
+ project_control/CURSOR_FEEDBACK_LOG.md             |   5 +
+ project_control/DECISION_LOG.md                    |   7 +
+ project_control/ENGINE_PRODUCT_SEPARATION.md       |  21 ++
+ project_control/NEXT_ACTIONS.md                    |   9 +
+ project_control/PRODUCTIZATION_STRATEGY.md         |  21 ++
+ project_control/PRODUCT_READINESS_LADDER.md        |  13 +
+ project_control/PRODUCT_SPEC_REGISTRY.md           |  12 +
+ project_control/PROJECT_CHARTER.md                 |  36 +++
+ project_control/PROMPT_LOG.md                      |   5 +
+ project_control/RELEASE_CHAIN_STATUS.md            |  10 +
+ project_control/REVIEW_BUNDLE_REQUIREMENTS.md      |  26 ++
+ project_control/ROADMAP.md                         |  27 +++
+ project_control/cto_review_packages/.gitkeep       |   0
+ ...0260626_product-artifact-builder-foundation.zip | Bin 0 -> 10181 bytes
+ .../CHANGED_FILES.txt                              |   3 +
+ .../CI_STATUS.md                                   |   2 +
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  21 ++
+ .../CTO_HANDOFF_REPORT.md                          |   8 +
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   5 +
+ .../DECISION_LOG_SNAPSHOT.md                       |   7 +
+ .../DIFF_SUMMARY.patch                             |  74 ++++++
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   4 +
+ .../GIT_LOG.txt                                    |   1 +
+ .../GIT_STATUS.txt                                 |  21 ++
+ .../MANIFEST.md                                    |  25 ++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |   9 +
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  12 +
+ .../PROMPT_LOG_SNAPSHOT.md                         |   5 +
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  23 ++
+ .../REVIEW_SUMMARY.json                            |  30 +++
+ .../ROADMAP_SNAPSHOT.md                            |  27 +++
+ .../TEST_RESULTS.md                                |   4 +
+ .../templates/CTO_HANDOFF_REPORT_TEMPLATE.md       |  53 +++++
+ .../templates/CURSOR_FEEDBACK_SUMMARY_TEMPLATE.md  |  13 +
+ .../templates/PRODUCT_SPEC_TEMPLATE.yaml           |  22 ++
+ .../templates/REVIEW_BUNDLE_MANIFEST_TEMPLATE.md   |  16 ++
+ .../templates/REVIEW_SUMMARY_TEMPLATE.json         |  24 ++
+ pyproject.toml                                     |  28 +++
+ schemas/product_spec.schema.json                   |  89 +++++++
+ schemas/review_summary.schema.json                 |  61 +++++
+ src/tdf_product_artifact_builder/__init__.py       |  56 +++++
+ src/tdf_product_artifact_builder/checksums.py      |  17 ++
+ .../claim_boundaries.py                            |  81 +++++++
+ src/tdf_product_artifact_builder/manifest.py       |  62 +++++
+ src/tdf_product_artifact_builder/product_spec.py   | 142 +++++++++++
+ src/tdf_product_artifact_builder/review_summary.py |  88 +++++++
+ .../reviewer_package.py                            | 137 +++++++++++
+ src/tdf_product_artifact_builder/version.py        |   3 +
+ tests/conftest.py                                  |   8 +
+ tests/test_claim_boundaries.py                     |  31 +++
+ tests/test_cto_review_bundle_tool.py               |  37 +++
+ tests/test_engine_product_separation.py            |  51 ++++
+ tests/test_product_spec_schema.py                  |  57 +++++
+ tests/test_project_control_docs_exist.py           |  27 +++
+ tests/test_reference_product_spec.py               |  34 +++
+ tests/test_review_summary_schema.py                |  46 ++++
+ tools/create_cto_review_bundle.py                  | 261 +++++++++++++++++++++
+ 65 files changed, 2089 insertions(+)
