@@ -1,0 +1,17 @@
+commit 5e9cce12633bdab90cfd97f0966893a6ef4377ba
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 16:14:08 2026 -0700
+
+    Repair review bundle provenance metadata
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ .../templates/REVIEW_SUMMARY_TEMPLATE.json         |  5 ++
+ schemas/review_summary.schema.json                 | 31 ++++++-
+ src/tdf_product_artifact_builder/__init__.py       | 12 +++
+ .../review_bundle_provenance.py                    | 77 ++++++++++++++++++
+ tests/test_cto_review_bundle_tool.py               | 37 ---------
+ tests/test_review_bundle_provenance.py             | 95 ++++++++++++++++++++++
+ tests/test_review_summary_schema.py                | 23 +++++-
+ tools/create_cto_review_bundle.py                  | 86 ++++++++++++++++++--
+ 8 files changed, 320 insertions(+), 46 deletions(-)
