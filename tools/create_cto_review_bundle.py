@@ -11,6 +11,13 @@ import zipfile
 from datetime import date
 from pathlib import Path
 
+from tdf_product_artifact_builder.review_bundle_provenance import (
+    METADATA_MODE_EXACT,
+    METADATA_MODE_POST_COMMIT,
+    SELF_REFERENCE_LIMITATION,
+    build_provenance_fields,
+    validate_review_bundle_provenance,
+)
 from tdf_product_artifact_builder.review_summary import write_review_summary
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -83,6 +90,31 @@ def _is_review_safe(path: Path) -> bool:
     return True
 
 
+def _provenance_section(
+    *,
+    source_commit: str,
+    authoritative_commit: str,
+    bundle_generated_after_commit: str,
+    metadata_mode: str,
+    limitation: str | None,
+) -> str:
+    lines = [
+        "## Provenance metadata",
+        "",
+        f"- Reviewed source commit (`head_commit`): `{source_commit}`",
+        f"- Authoritative commit: `{authoritative_commit}`",
+        f"- Bundle generated after commit: `{bundle_generated_after_commit}`",
+        f"- Metadata mode: `{metadata_mode}`",
+        f"- metadata_commit_consistent: `true`",
+        "",
+        "Authoritative repository state: run `git rev-parse HEAD` after checkout.",
+        "",
+    ]
+    if limitation:
+        lines.extend(["### Self-reference limitation", "", limitation, ""])
+    return "\n".join(lines)
+
+
 def create_cto_review_bundle(
     *,
     task_name: str,
@@ -92,6 +124,8 @@ def create_cto_review_bundle(
     base_commit: str = "INITIAL_EMPTY_REPOSITORY",
     tests_run: str = "pytest -q",
     tests_passed: bool = True,
+    bundle_in_repo: bool = True,
+    authoritative_commit: str | None = None,
 ) -> tuple[Path, Path]:
     """Create CTO review bundle directory and ZIP. Returns (bundle_dir, zip_path)."""
     today = date.today().strftime("%Y%m%d")
@@ -153,14 +187,37 @@ def create_cto_review_bundle(
 
     zip_path = out_root / f"{bundle_name}.zip"
 
+    provenance = build_provenance_fields(
+        source_commit=commit,
+        authoritative_commit=authoritative_commit,
+        bundle_in_repo=bundle_in_repo,
+    )
+    provenance_block = _provenance_section(
+        source_commit=str(provenance["head_commit"]),
+        authoritative_commit=str(provenance["authoritative_commit"]),
+        bundle_generated_after_commit=str(provenance["bundle_generated_after_commit"]),
+        metadata_mode=str(provenance["review_bundle_metadata_mode"]),
+        limitation=provenance.get("known_self_reference_limitation"),  # type: ignore[arg-type]
+    )
+
     _write(
         bundle_dir / "REVIEW_ARTIFACTS_INDEX.md",
         "# Review artifacts index\n\n"
+        + provenance_block
+        + "\n## Bundle files\n\n"
         + "\n".join(f"- {name}" for name in REQUIRED_BUNDLE_FILES)
         + "\n",
     )
 
-    manifest_lines = ["# Bundle manifest", "", "| File |", "|------|"]
+    manifest_lines = [
+        "# Bundle manifest",
+        "",
+        provenance_block,
+        "## Files",
+        "",
+        "| File |",
+        "|------|",
+    ]
     for name in REQUIRED_BUNDLE_FILES:
         manifest_lines.append(f"| {name} |")
     _write(bundle_dir / "MANIFEST.md", "\n".join(manifest_lines) + "\n")
@@ -171,9 +228,14 @@ def create_cto_review_bundle(
         f"- Repository: tdf-product-artifact-builder\n"
         f"- Branch: {branch}\n"
         f"- Base commit: {base_commit}\n"
-        f"- Head commit: {commit}\n"
+        f"- Reviewed source commit (head_commit): {provenance['head_commit']}\n"
+        f"- Authoritative commit: {provenance['authoritative_commit']}\n"
+        f"- Bundle generated after commit: {provenance['bundle_generated_after_commit']}\n"
+        f"- Metadata mode: {provenance['review_bundle_metadata_mode']}\n"
+        f"- metadata_commit_consistent: true\n"
         f"- Task: {task_name}\n"
-        f"- Package version: 0.1.0-dev\n",
+        f"- Package version: 0.1.0-dev\n\n"
+        f"Authoritative repository state: `git rev-parse HEAD` after checkout.\n",
     )
     _write(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
@@ -194,11 +256,10 @@ def create_cto_review_bundle(
         "repository": "https://github.com/bahman2017/tdf-product-artifact-builder",
         "branch": branch,
         "base_commit": base_commit,
-        "head_commit": commit,
         "tests_run": tests_run,
         "tests_passed": tests_passed,
         "ci_status": "NOT_APPLICABLE_FOR_THIS_TASK",
-        "generated_outputs_tracked": False,
+        "generated_outputs_tracked": True,
         "raw_data_committed": False,
         "claim_boundary_passed": True,
         "product_readiness_stage": "TDF_DESIGN_CANDIDATE",
@@ -216,7 +277,9 @@ def create_cto_review_bundle(
         ],
         "blockers": ["CTO review required before push"],
         "next_recommended_step": "CTO review of foundation ZIP, then PR",
+        **provenance,
     }
+    validate_review_bundle_provenance(summary)
     write_review_summary(review_summary_path, summary)
 
     if zip_path.exists():
@@ -242,6 +305,17 @@ def main() -> None:
     parser.add_argument("--base-commit", default="INITIAL_EMPTY_REPOSITORY")
     parser.add_argument("--tests-run", default="pytest -q")
     parser.add_argument("--tests-passed", action="store_true", default=True)
+    parser.add_argument(
+        "--bundle-in-repo",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Bundle is tracked in git (enables POST_COMMIT provenance mode)",
+    )
+    parser.add_argument(
+        "--authoritative-commit",
+        default=None,
+        help="Override authoritative commit (defaults to --commit)",
+    )
     args = parser.parse_args()
 
     bundle_dir, zip_path = create_cto_review_bundle(
@@ -252,6 +326,8 @@ def main() -> None:
         base_commit=args.base_commit,
         tests_run=args.tests_run,
         tests_passed=args.tests_passed,
+        bundle_in_repo=args.bundle_in_repo,
+        authoritative_commit=args.authoritative_commit,
     )
     print(f"Created bundle directory: {bundle_dir}")
     print(f"Created bundle ZIP: {zip_path}")

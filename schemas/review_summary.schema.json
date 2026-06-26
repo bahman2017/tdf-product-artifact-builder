@@ -10,6 +10,10 @@
     "branch",
     "base_commit",
     "head_commit",
+    "authoritative_commit",
+    "bundle_generated_after_commit",
+    "review_bundle_metadata_mode",
+    "metadata_commit_consistent",
     "tests_run",
     "tests_passed",
     "ci_status",
@@ -34,6 +38,17 @@
     "branch": { "type": "string", "minLength": 1 },
     "base_commit": { "type": "string", "minLength": 1 },
     "head_commit": { "type": "string", "minLength": 1 },
+    "authoritative_commit": { "type": "string", "minLength": 1 },
+    "bundle_generated_after_commit": { "type": "string", "minLength": 1 },
+    "review_bundle_metadata_mode": {
+      "type": "string",
+      "enum": [
+        "EXACT_SOURCE_COMMIT",
+        "POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION"
+      ]
+    },
+    "metadata_commit_consistent": { "type": "boolean", "const": true },
+    "known_self_reference_limitation": { "type": "string" },
     "tests_run": { "type": "string", "minLength": 1 },
     "tests_passed": { "type": "boolean" },
     "ci_status": { "type": "string", "minLength": 1 },
@@ -57,5 +72,19 @@
       "items": { "type": "string" }
     },
     "next_recommended_step": { "type": "string", "minLength": 1 }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review_bundle_metadata_mode": {
+            "const": "POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION"
+          }
+        }
+      },
+      "then": {
+        "required": ["known_self_reference_limitation"]
+      }
+    }
+  ]
 }

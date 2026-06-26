@@ -1,5 +1,21 @@
 # Review artifacts index
 
+## Provenance metadata
+
+- Reviewed source commit (`head_commit`): `5e9cce12633bdab90cfd97f0966893a6ef4377ba`
+- Authoritative commit: `5e9cce12633bdab90cfd97f0966893a6ef4377ba`
+- Bundle generated after commit: `5e9cce12633bdab90cfd97f0966893a6ef4377ba`
+- Metadata mode: `POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION`
+- metadata_commit_consistent: `true`
+
+Authoritative repository state: run `git rev-parse HEAD` after checkout.
+
+### Self-reference limitation
+
+The review bundle is generated after the source commit; final git rev-parse HEAD is authoritative for repository state including bundle files. head_commit identifies the reviewed source revision.
+
+## Bundle files
+
 - CTO_HANDOFF_REPORT.md
 - CURSOR_FEEDBACK_SUMMARY.md
 - TEST_RESULTS.md

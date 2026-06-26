@@ -18,6 +18,13 @@ from tdf_product_artifact_builder.product_spec import (
     validate_product_spec,
     validate_product_spec_schema,
 )
+from tdf_product_artifact_builder.review_bundle_provenance import (
+    METADATA_MODE_EXACT,
+    METADATA_MODE_POST_COMMIT,
+    SELF_REFERENCE_LIMITATION,
+    build_provenance_fields,
+    validate_review_bundle_provenance,
+)
 from tdf_product_artifact_builder.review_summary import (
     create_review_summary,
     load_review_summary_schema,
@@ -37,7 +44,12 @@ __all__ = [
     "PackageManifest",
     "ProductSpecValidationReport",
     "ReviewerPackageReport",
+    "METADATA_MODE_EXACT",
+    "METADATA_MODE_POST_COMMIT",
+    "SELF_REFERENCE_LIMITATION",
     "__version__",
+    "build_provenance_fields",
+    "validate_review_bundle_provenance",
     "build_manifest",
     "create_review_summary",
     "create_reviewer_package",

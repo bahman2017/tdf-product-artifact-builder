@@ -1,3 +1,8 @@
-fatal: ambiguous argument 'HEAD~1..HEAD': unknown revision or path not in the working tree.
-Use '--' to separate paths from revisions, like this:
-'git <command> [<revision>...] -- [<file>...]'
+project_control/templates/REVIEW_SUMMARY_TEMPLATE.json
+schemas/review_summary.schema.json
+src/tdf_product_artifact_builder/__init__.py
+src/tdf_product_artifact_builder/review_bundle_provenance.py
+tests/test_cto_review_bundle_tool.py
+tests/test_review_bundle_provenance.py
+tests/test_review_summary_schema.py
+tools/create_cto_review_bundle.py
