@@ -34,6 +34,8 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "CLAIM_BOUNDARY_AUDIT.md",
     "GENERATED_OUTPUTS_AUDIT.md",
     "RAW_DATA_AUDIT.md",
+    "STATIC_POLICY_AUDIT.md",
+    "HIDDEN_UNICODE_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -154,7 +156,6 @@ def create_cto_review_bundle(
         bundle_dir / "TEST_RESULTS.md",
         f"# Test results\n\n- Command: `{tests_run}`\n- Passed: `{tests_passed}`\n",
     )
-    _write(bundle_dir / "CI_STATUS.md", "NOT_APPLICABLE_FOR_THIS_TASK\nNo CI workflow configured yet.\n")
 
     pc = REPO_ROOT / "project_control"
     _snapshot(pc / "RELEASE_CHAIN_STATUS.md", bundle_dir / "RELEASE_CHAIN_STATUS_SNAPSHOT.md")
@@ -184,6 +185,39 @@ def create_cto_review_bundle(
         "- No raw coordinate files committed.\n"
         "- No PDB/XYZ/CIF artifacts in repository.\n",
     )
+
+    static_audit_output = _run(["python3", "tools/static_policy_audit.py"], REPO_ROOT)
+    _write(bundle_dir / "STATIC_POLICY_AUDIT.md", f"# Static policy audit\n\n```text\n{static_audit_output.strip()}\n```\n")
+
+    hidden_audit_lines = [
+        "# Hidden Unicode audit",
+        "",
+        "- Scanned tracked text files for bidi controls, zero-width characters, BOM, and Cf/Cc/Cs controls.",
+        "- Allowed controls: newline, carriage return, tab only.",
+        "- Result: see STATIC_POLICY_AUDIT.md hidden_unicode findings if any.",
+        "",
+    ]
+    if "RESULT: PASS" in static_audit_output:
+        hidden_audit_lines.append("Final result: PASS")
+    else:
+        hidden_audit_lines.append("Final result: FAIL")
+    _write(bundle_dir / "HIDDEN_UNICODE_AUDIT.md", "\n".join(hidden_audit_lines) + "\n")
+
+    ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+    ci_status_value = "NOT_APPLICABLE_FOR_THIS_TASK"
+    if ci_workflow.is_file():
+        ci_status_value = "CONFIGURED_LOCAL_ONLY_NOT_YET_RUN_ON_GITHUB"
+        _write(
+            bundle_dir / "CI_STATUS.md",
+            "# CI status\n\n"
+            "- Workflow: `.github/workflows/ci.yml`\n"
+            "- Triggers: push and pull_request on `main`\n"
+            "- Python: 3.11 and 3.12 matrix\n"
+            "- Steps: pytest, static policy audit\n"
+            "- No OpenMM or LAMMPS execution\n",
+        )
+    else:
+        _write(bundle_dir / "CI_STATUS.md", "NOT_APPLICABLE_FOR_THIS_TASK\nNo CI workflow configured yet.\n")
 
     zip_path = out_root / f"{bundle_name}.zip"
 
@@ -258,7 +292,7 @@ def create_cto_review_bundle(
         "base_commit": base_commit,
         "tests_run": tests_run,
         "tests_passed": tests_passed,
-        "ci_status": "NOT_APPLICABLE_FOR_THIS_TASK",
+        "ci_status": ci_status_value,
         "generated_outputs_tracked": True,
         "raw_data_committed": False,
         "claim_boundary_passed": True,
@@ -271,12 +305,16 @@ def create_cto_review_bundle(
         "cto_review_zip_created": True,
         "review_zip_path": review_zip_rel,
         "known_risks": [
+            "CI workflow configured locally; GitHub Actions not yet verified until push",
+            "Reviewer package builder is placeholder scaffold only",
+            "tdf-openmm-validation integration not yet wired",
+        ] if ci_workflow.is_file() else [
             "No CI workflow yet",
             "Reviewer package builder is placeholder scaffold only",
             "tdf-openmm-validation integration not yet wired",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of foundation ZIP, then PR",
+        "next_recommended_step": "CTO review of CI foundation bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)

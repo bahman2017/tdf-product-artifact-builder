@@ -1,0 +1,48 @@
+commit 7e639d8a5e3b24e19f8ea6ceca1d817a0a7d010b
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 16:59:10 2026 -0700
+
+    Add CI and static policy checks
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ .github/workflows/ci.yml                           |  31 +++
+ project_control/COMPLETED_WORK.md                  |  21 +-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   2 +
+ project_control/NEXT_ACTIONS.md                    |  14 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |  27 ++-
+ .../20260626_ci-static-policy-foundation.zip       | Bin 0 -> 11583 bytes
+ .../CHANGED_FILES.txt                              |  15 ++
+ .../CI_STATUS.md                                   |   7 +
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  30 +++
+ .../CTO_HANDOFF_REPORT.md                          |  14 ++
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   5 +
+ .../DECISION_LOG_SNAPSHOT.md                       |   9 +
+ .../DIFF_SUMMARY.patch                             |  24 +++
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   4 +
+ .../GIT_LOG.txt                                    |   5 +
+ .../GIT_STATUS.txt                                 |   1 +
+ .../HIDDEN_UNICODE_AUDIT.md                        |   7 +
+ .../MANIFEST.md                                    |  43 ++++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |  11 +
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  12 ++
+ .../PROMPT_LOG_SNAPSHOT.md                         |   6 +
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  41 ++++
+ .../REVIEW_SUMMARY.json                            |  35 ++++
+ .../ROADMAP_SNAPSHOT.md                            |  40 ++++
+ .../STATIC_POLICY_AUDIT.md                         |   7 +
+ .../TEST_RESULTS.md                                |   4 +
+ tests/test_ci_workflow_exists.py                   |  29 +++
+ tests/test_engine_product_separation.py            |   1 +
+ tests/test_no_hidden_unicode_controls.py           |  23 +++
+ tests/test_no_raw_or_secret_files.py               |  16 ++
+ tests/test_static_policy_audit.py                  |  64 ++++++
+ tools/create_cto_review_bundle.py                  |  34 +++-
+ tools/static_policy_audit.py                       | 226 +++++++++++++++++++++
+ 39 files changed, 811 insertions(+), 21 deletions(-)
