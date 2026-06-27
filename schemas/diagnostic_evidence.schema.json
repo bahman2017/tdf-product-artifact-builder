@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/diagnostic_evidence.schema.json",
+  "title": "TDF Diagnostic Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "evidence_type",
+    "source_tool",
+    "source_version",
+    "source_repository",
+    "source_commit",
+    "created_at",
+    "input_artifacts",
+    "diagnostic_flags",
+    "claim_boundaries",
+    "limitations",
+    "reviewer_summary",
+    "evidence_files",
+    "checksums"
+  ],
+  "properties": {
+    "evidence_id": { "type": "string", "minLength": 1 },
+    "evidence_type": { "type": "string", "minLength": 1 },
+    "source_tool": { "type": "string", "minLength": 1 },
+    "source_version": { "type": "string", "minLength": 1 },
+    "source_repository": { "type": "string", "minLength": 1 },
+    "source_commit": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "input_artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "diagnostic_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lammps_input_executed",
+        "simulation_executed",
+        "accepted_for_simulation",
+        "force_field_ready",
+        "wet_lab_ready"
+      ],
+      "properties": {
+        "lammps_input_executed": { "type": "boolean", "const": false },
+        "simulation_executed": { "type": "boolean", "const": false },
+        "accepted_for_simulation": { "type": "boolean", "const": false },
+        "force_field_ready": { "type": "boolean", "const": false },
+        "wet_lab_ready": { "type": "boolean", "const": false }
+      }
+    },
+    "claim_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_boundary_passed", "allowed_claims", "forbidden_claims"],
+      "properties": {
+        "claim_boundary_passed": { "type": "boolean", "const": true },
+        "allowed_claims": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "forbidden_claims": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "reviewer_summary": { "type": "string", "minLength": 1 },
+    "evidence_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["relative_path", "sha256"],
+        "properties": {
+          "relative_path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "checksums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "files"],
+      "properties": {
+        "algorithm": { "type": "string", "const": "sha256" },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["relative_path", "sha256"],
+            "properties": {
+              "relative_path": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

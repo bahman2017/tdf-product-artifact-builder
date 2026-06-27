@@ -26,6 +26,12 @@ def main() -> None:
         required=True,
         help="Output directory for the reviewer package",
     )
+    parser.add_argument(
+        "--evidence",
+        action="append",
+        default=[],
+        help="Optional diagnostic evidence JSON file (repeatable)",
+    )
     args = parser.parse_args()
 
     spec_path = Path(args.product_spec)
@@ -34,7 +40,11 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        report = create_reviewer_package(spec_path, args.output_dir)
+        report = create_reviewer_package(
+            spec_path,
+            args.output_dir,
+            evidence_paths=args.evidence or None,
+        )
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
@@ -46,6 +56,7 @@ def main() -> None:
     print(f"Claim boundary passed: {report.claim_boundary_passed}")
     print(f"simulation_authorized: {report.simulation_authorized}")
     print(f"wet_lab_ready: {report.wet_lab_ready}")
+    print(f"evidence_included: {report.evidence_included}")
     for name in sorted(report.files_written):
         print(f"  - {name}")
 

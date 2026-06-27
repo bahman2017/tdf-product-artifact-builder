@@ -39,6 +39,9 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "REVIEWER_PACKAGE_BUILDER_AUDIT.md",
     "PRODUCT_REPORT_SCHEMA_AUDIT.md",
     "REVIEWER_MANIFEST_SCHEMA_AUDIT.md",
+    "DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md",
+    "TDF_OPENMM_CONTRACT_AUDIT.md",
+    "EVIDENCE_MANIFEST_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -120,6 +123,38 @@ def _provenance_section(
     return "\n".join(lines)
 
 
+def _write_review_zip(bundle_dir: Path, out_root: Path, zip_path: Path) -> None:
+    if zip_path.exists():
+        zip_path.unlink()
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for path in sorted(bundle_dir.rglob("*")):
+            if not path.is_file():
+                continue
+            if not _is_review_safe(path):
+                continue
+            arcname = str(path.relative_to(out_root))
+            zf.write(path, arcname=arcname)
+
+
+def regenerate_cto_review_zip(bundle_dir: Path, out_root: Path | None = None) -> Path:
+    """Rebuild a CTO review ZIP from an existing bundle directory."""
+    root = out_root or bundle_dir.parent
+    zip_path = root / f"{bundle_dir.name}.zip"
+    _write_review_zip(bundle_dir, root, zip_path)
+    return zip_path
+
+
+def regenerate_all_cto_review_zips(out_root: Path | None = None) -> list[Path]:
+    """Rebuild all CTO review ZIP archives from on-disk bundle directories."""
+    root = out_root or (REPO_ROOT / "project_control/cto_review_packages")
+    regenerated: list[Path] = []
+    for bundle_dir in sorted(root.iterdir()):
+        if not bundle_dir.is_dir():
+            continue
+        regenerated.append(regenerate_cto_review_zip(bundle_dir, root))
+    return regenerated
+
+
 def create_cto_review_bundle(
     *,
     task_name: str,
@@ -197,11 +232,12 @@ def create_cto_review_bundle(
         "# Hidden Unicode audit",
         "",
         "- Scanned tracked text files for bidi controls, zero-width characters, BOM, and Cf/Cc/Cs controls.",
+        "- Scanned reviewer-facing text and CTO review ZIP members for strict ASCII.",
         "- Allowed controls: newline, carriage return, tab only.",
-        "- Result: see STATIC_POLICY_AUDIT.md hidden_unicode findings if any.",
+        "- Result: see STATIC_POLICY_AUDIT.md hidden_unicode and reviewer_ascii findings if any.",
         "",
     ]
-    if "RESULT: PASS" in static_audit_output:
+    if "RESULT: PASS" in static_audit_output and "reviewer_ascii" not in static_audit_output:
         hidden_audit_lines.append("Final result: PASS")
     else:
         hidden_audit_lines.append("Final result: FAIL")
@@ -231,6 +267,28 @@ def create_cto_review_bundle(
         "- MANIFEST.json validates against schema in tests.\n"
         "- CHECKSUMS.sha256.json matches generated content files.\n"
         "- MANIFEST.json self-entry excluded to avoid circular hash.\n",
+    )
+    _write(
+        bundle_dir / "DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md",
+        "# Diagnostic evidence schema audit\n\n"
+        "- Schema: `schemas/diagnostic_evidence.schema.json`\n"
+        "- Generic evidence contract with required safety flags.\n"
+        "- Validated in tests using review-safe JSON fixtures only.\n",
+    )
+    _write(
+        bundle_dir / "TDF_OPENMM_CONTRACT_AUDIT.md",
+        "# TDF OpenMM validation contract audit\n\n"
+        "- Schema: `schemas/tdf_openmm_validation_evidence.schema.json`\n"
+        "- Contract validation only; no import or execution of tdf-openmm-validation.\n"
+        "- Required safety flags enforced to false.\n"
+        "- CLI: `tools/validate_diagnostic_evidence.py`\n",
+    )
+    _write(
+        bundle_dir / "EVIDENCE_MANIFEST_AUDIT.md",
+        "# Evidence manifest audit\n\n"
+        "- Schema: `schemas/evidence_manifest.schema.json`\n"
+        "- EVIDENCE_MANIFEST.json generated when evidence inputs provided.\n"
+        "- Deterministic checksums verified in tests.\n",
     )
 
     ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
@@ -305,7 +363,7 @@ def create_cto_review_bundle(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
         f"# Cursor feedback summary\n\n"
         f"- Task: {task_name}\n"
-        f"- Generic reviewer package builder hardened.\n"
+        f"- Integration contract layer for tdf-openmm-validation evidence.\n"
         f"- Engine/product separation enforced.\n"
         f"- No simulation or product package generation.\n",
     )
@@ -337,30 +395,21 @@ def create_cto_review_bundle(
         "review_zip_path": review_zip_rel,
         "known_risks": [
             "CI workflow configured locally; GitHub Actions not yet verified until push",
-            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Evidence contract layer only; no live upstream ingestion yet",
             "Real product package generation still blocked pending CTO approval",
         ] if ci_workflow.is_file() else [
             "No CI workflow yet",
-            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Evidence contract layer only; no live upstream ingestion yet",
             "Real product package generation still blocked pending CTO approval",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of reviewer package builder bundle, then PR",
+        "next_recommended_step": "CTO review of integration contract bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)
     write_review_summary(review_summary_path, summary)
 
-    if zip_path.exists():
-        zip_path.unlink()
-    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for path in sorted(bundle_dir.rglob("*")):
-            if not path.is_file():
-                continue
-            if not _is_review_safe(path):
-                continue
-            arcname = str(path.relative_to(out_root))
-            zf.write(path, arcname=arcname)
+    _write_review_zip(bundle_dir, out_root, zip_path)
 
     return bundle_dir, zip_path
 
