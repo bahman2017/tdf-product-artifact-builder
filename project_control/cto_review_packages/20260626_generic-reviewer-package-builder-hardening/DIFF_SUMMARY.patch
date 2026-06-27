@@ -1,66 +1,22 @@
-commit 67b4f7197c1d520483436c66cbf47d5f698eb1a4
+commit 5ba1034ba0b1d417c796ef26d82f1f3a704a1f88
 Author: bahman2017 <bmasarrat@gmail.com>
-Date:   Fri Jun 26 17:40:34 2026 -0700
+Date:   Fri Jun 26 18:10:48 2026 -0700
 
-    Harden generic reviewer package builder
+    Normalize reviewer-facing Unicode text
     
     Co-authored-by: Cursor <cursoragent@cursor.com>
 
- .gitignore                                         |   1 +
- project_control/COMPLETED_WORK.md                  |  19 +-
- project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
- project_control/DECISION_LOG.md                    |   2 +
- project_control/NEXT_ACTIONS.md                    |  13 +-
- project_control/PRODUCT_SPEC_REGISTRY.md           |  10 +-
- project_control/PROMPT_LOG.md                      |   1 +
- project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
- project_control/ROADMAP.md                         |  19 +-
- ..._generic-reviewer-package-builder-hardening.zip | Bin 0 -> 15743 bytes
- .../CHANGED_FILES.txt                              |  57 +++++
- .../CI_STATUS.md                                   |   7 +
- .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
- .../COMPLETED_WORK_SNAPSHOT.md                     |  41 +++
- .../CTO_HANDOFF_REPORT.md                          |  14 ++
- .../CURSOR_FEEDBACK_SUMMARY.md                     |   6 +
- .../DECISION_LOG_SNAPSHOT.md                       |  11 +
- .../DIFF_SUMMARY.patch                             |  66 +++++
- .../GENERATED_OUTPUTS_AUDIT.md                     |   5 +
- .../GIT_LOG.txt                                    |   7 +
- .../GIT_STATUS.txt                                 |  26 ++
- .../HIDDEN_UNICODE_AUDIT.md                        |   7 +
- .../MANIFEST.md                                    |  46 ++++
- .../NEXT_ACTIONS_SNAPSHOT.md                       |  10 +
- .../PRODUCT_REPORT_SCHEMA_AUDIT.md                 |   5 +
- .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  14 ++
- .../PROMPT_LOG_SNAPSHOT.md                         |   7 +
- .../RAW_DATA_AUDIT.md                              |   4 +
- .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +
- .../REVIEWER_MANIFEST_SCHEMA_AUDIT.md              |   6 +
- .../REVIEWER_PACKAGE_BUILDER_AUDIT.md              |   8 +
- .../REVIEW_ARTIFACTS_INDEX.md                      |  44 ++++
- .../REVIEW_SUMMARY.json                            |  35 +++
- .../ROADMAP_SNAPSHOT.md                            |  51 ++++
- .../STATIC_POLICY_AUDIT.md                         |   7 +
- .../TEST_RESULTS.md                                |   4 +
- schemas/product_report.schema.json                 |  68 +++++
- schemas/reviewer_manifest.schema.json              |  44 ++++
- src/tdf_product_artifact_builder/__init__.py       |  34 ++-
- src/tdf_product_artifact_builder/checksums.py      |  51 ++++
- .../claim_boundaries.py                            | 105 ++++++++
- src/tdf_product_artifact_builder/manifest.py       |  52 +++-
- src/tdf_product_artifact_builder/package_writer.py |  50 ++++
- src/tdf_product_artifact_builder/product_report.py |  51 ++++
- .../reproducibility.py                             |  42 ++++
- .../reviewer_package.py                            | 274 ++++++++++++++++-----
- tests/test_build_reviewer_package_tool.py          |  49 ++++
- tests/test_product_report_schema.py                |  50 ++++
- tests/test_reproducibility_docs.py                 |  27 ++
- tests/test_reviewer_manifest_schema.py             |  44 ++++
- tests/test_reviewer_package_builder.py             |  31 +++
- tests/test_reviewer_package_claim_boundaries.py    |  37 +++
- tests/test_reviewer_package_determinism.py         |  36 +++
- tests/test_reviewer_package_no_simulation_flags.py |  38 +++
- tests/test_reviewer_package_outputs.py             |  40 +++
- tools/build_reviewer_package.py                    |  54 ++++
- tools/create_cto_review_bundle.py                  |  45 +++-
- 57 files changed, 1696 insertions(+), 98 deletions(-)
+ README.md                                          |  2 +-
+ project_control/COMPLETED_WORK.md                  |  8 ++--
+ project_control/PRODUCTIZATION_STRATEGY.md         |  2 +-
+ project_control/PRODUCT_READINESS_LADDER.md        |  4 +-
+ project_control/PROJECT_CHARTER.md                 |  4 +-
+ project_control/ROADMAP.md                         | 16 ++++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  6 +--
+ .../ROADMAP_SNAPSHOT.md                            | 14 +++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  8 ++--
+ .../ROADMAP_SNAPSHOT.md                            | 16 ++++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  6 +--
+ .../ROADMAP_SNAPSHOT.md                            | 10 ++---
+ tests/test_reviewer_facing_ascii.py                | 46 ++++++++++++++++++++++
+ 13 files changed, 94 insertions(+), 48 deletions(-)

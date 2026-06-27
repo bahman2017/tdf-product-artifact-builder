@@ -23,7 +23,7 @@ This repository turns TDF-chain design artifacts into **reproducible, auditable,
 | **Product specs** | Product-specific inputs under `product_specs/` |
 | **Reviewer packages** | Static audit handoff outputs for external review |
 
-The engine must remain **generic**. Product-specific behavior belongs only in product spec files — never hard-coded in builder logic.
+The engine must remain **generic**. Product-specific behavior belongs only in product spec files -- never hard-coded in builder logic.
 
 ## First reference product
 

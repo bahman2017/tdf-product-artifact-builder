@@ -1,4 +1,5 @@
-67b4f71 Harden generic reviewer package builder
+5ba1034 Normalize reviewer-facing Unicode text
+b72d55e Harden generic reviewer package builder
 5076071 Merge pull request #2 from bahman2017/feature/ci-static-policy-foundation
 71dabf8 Add CI and static policy checks
 0a67db9 Merge pull request #1 from bahman2017/feature/product-artifact-builder-foundation

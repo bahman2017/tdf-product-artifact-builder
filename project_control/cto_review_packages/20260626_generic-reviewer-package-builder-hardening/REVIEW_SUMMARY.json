@@ -1,11 +1,11 @@
 {
-  "authoritative_commit": "67b4f7197c1d520483436c66cbf47d5f698eb1a4",
+  "authoritative_commit": "5ba1034ba0b1d417c796ef26d82f1f3a704a1f88",
   "base_commit": "50760712a9c4f19a03944f8e22c035a038e9d967",
   "blockers": [
     "CTO review required before push"
   ],
   "branch": "feature/generic-reviewer-package-builder-hardening",
-  "bundle_generated_after_commit": "67b4f7197c1d520483436c66cbf47d5f698eb1a4",
+  "bundle_generated_after_commit": "5ba1034ba0b1d417c796ef26d82f1f3a704a1f88",
   "ci_status": "CONFIGURED_LOCAL_ONLY_NOT_YET_RUN_ON_GITHUB",
   "claim_boundary_passed": true,
   "completed_work_updated": true,
@@ -13,7 +13,7 @@
   "cursor_feedback_log_updated": true,
   "decision_log_updated": true,
   "generated_outputs_tracked": true,
-  "head_commit": "67b4f7197c1d520483436c66cbf47d5f698eb1a4",
+  "head_commit": "5ba1034ba0b1d417c796ef26d82f1f3a704a1f88",
   "known_risks": [
     "CI workflow configured locally; GitHub Actions not yet verified until push",
     "Reviewer package builder not yet integrated with tdf-openmm-validation",
@@ -31,5 +31,5 @@
   "review_zip_path": "project_control/cto_review_packages/20260626_generic-reviewer-package-builder-hardening.zip",
   "task_name": "generic-reviewer-package-builder-hardening",
   "tests_passed": true,
-  "tests_run": "pytest -q (64 passed)"
+  "tests_run": "pytest -q (65 passed)"
 }

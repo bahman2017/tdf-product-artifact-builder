@@ -10,7 +10,7 @@ Upstream TDF packages (`tdf-core`, `tdf-iongate`, `tdf-atomic-blueprint`, `tdf-b
 
 ## Product specs as inputs
 
-Each product is defined by a **product spec YAML** under `product_specs/`. Product-specific claims, readiness stage, and validation requirements live in the spec — not in engine code.
+Each product is defined by a **product spec YAML** under `product_specs/`. Product-specific claims, readiness stage, and validation requirements live in the spec -- not in engine code.
 
 ## Reviewer packages as outputs
 

@@ -2,9 +2,9 @@
 
 ## Provenance metadata
 
-- Reviewed source commit (`head_commit`): `67b4f7197c1d520483436c66cbf47d5f698eb1a4`
-- Authoritative commit: `67b4f7197c1d520483436c66cbf47d5f698eb1a4`
-- Bundle generated after commit: `67b4f7197c1d520483436c66cbf47d5f698eb1a4`
+- Reviewed source commit (`head_commit`): `5ba1034ba0b1d417c796ef26d82f1f3a704a1f88`
+- Authoritative commit: `5ba1034ba0b1d417c796ef26d82f1f3a704a1f88`
+- Bundle generated after commit: `5ba1034ba0b1d417c796ef26d82f1f3a704a1f88`
 - Metadata mode: `POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION`
 - metadata_commit_consistent: `true`
 

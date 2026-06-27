@@ -2,7 +2,7 @@
 
 ## Final project goal
 
-Build a **generic, reviewer-facing product artifact builder** that turns TDF-chain design outputs into reproducible, auditable, conventional product review packages — without proving TDF physics or authorizing simulation.
+Build a **generic, reviewer-facing product artifact builder** that turns TDF-chain design outputs into reproducible, auditable, conventional product review packages -- without proving TDF physics or authorizing simulation.
 
 ## Non-goals
 
@@ -19,7 +19,7 @@ Products are described as **candidates**, **artifacts**, and **diagnostic prepar
 
 ## Artifact trust model
 
-Trust is built in **artifact integrity** (manifests, checksums, claim boundaries, reproducible structure) — not in theoretical belief. The motto: **Build trust in the artifact, not belief in the theory.**
+Trust is built in **artifact integrity** (manifests, checksums, claim boundaries, reproducible structure) -- not in theoretical belief. The motto: **Build trust in the artifact, not belief in the theory.**
 
 ## Product-readiness ladder
 
