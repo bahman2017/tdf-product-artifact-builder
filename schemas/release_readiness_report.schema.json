@@ -23,6 +23,7 @@
     "readiness_stage_upgraded",
     "checks",
     "known_blockers",
+    "governance_notes",
     "release_readiness_decision",
     "generated_at_commit"
   ],
@@ -65,7 +66,12 @@
         "evidence_contract_status",
         "external_evidence_ingestion_status",
         "claim_boundary_status",
-        "release_chain_status"
+        "release_chain_status",
+        "changelog_status",
+        "release_notes_draft_status",
+        "release_candidate_checklist_status",
+        "no_tag_no_publish_statement_status",
+        "no_tag_exists_status"
       ],
       "properties": {
         "package_metadata": { "$ref": "#/$defs/check_result" },
@@ -86,8 +92,17 @@
         "evidence_contract_status": { "$ref": "#/$defs/check_result" },
         "external_evidence_ingestion_status": { "$ref": "#/$defs/check_result" },
         "claim_boundary_status": { "$ref": "#/$defs/check_result" },
-        "release_chain_status": { "$ref": "#/$defs/check_result" }
+        "release_chain_status": { "$ref": "#/$defs/check_result" },
+        "changelog_status": { "$ref": "#/$defs/check_result" },
+        "release_notes_draft_status": { "$ref": "#/$defs/check_result" },
+        "release_candidate_checklist_status": { "$ref": "#/$defs/check_result" },
+        "no_tag_no_publish_statement_status": { "$ref": "#/$defs/check_result" },
+        "no_tag_exists_status": { "$ref": "#/$defs/check_result" }
       }
+    },
+    "governance_notes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
     },
     "known_blockers": {
       "type": "array",
