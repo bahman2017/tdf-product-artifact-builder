@@ -58,7 +58,39 @@ ENGINE_FORBIDDEN_TERMS = (
     "li/na",
     "phase_gated_bn_membrane_candidate",
 )
-ENGINE_TERM_ALLOWLIST_FILES = {"claim_boundaries.py"}
+ENGINE_TERM_ALLOWLIST_FILES = {"claim_boundaries.py", "tdf_openmm_contract.py", "evidence_adapter.py"}
+
+FORBIDDEN_EXECUTION_PHRASES = (
+    "lmp -in",
+    "run 0",
+    "pair_style",
+    "pair_coeff",
+    "openmm.app",
+    "import lammps",
+    "import openmm",
+    "from openmm",
+    "from lammps",
+)
+
+EXECUTION_SCAN_ALLOWLIST_PREFIXES = (
+    "tests/",
+    "tools/static_policy_audit.py",
+    "tools/validate_diagnostic_evidence.py",
+    "project_control/",
+    "schemas/",
+)
+
+EXECUTION_LINE_ALLOW_MARKERS = (
+    "no ",
+    "not ",
+    "reject",
+    "forbidden",
+    "must not",
+    "without ",
+    "does not",
+    "do not",
+    "never ",
+)
 
 REVIEWER_DOC_PATHS = (
     "README.md",
@@ -112,6 +144,22 @@ def scan_hidden_unicode(text: str) -> list[tuple[int, str, str]]:
             line = text.count("\n", 0, i) + 1
             hits.append((line, f"U+{cp:04X}", unicodedata.name(ch, "UNKNOWN")))
     return hits
+
+
+def scan_forbidden_execution_line(line: str) -> str | None:
+    norm = line.lower()
+    if any(marker in norm for marker in EXECUTION_LINE_ALLOW_MARKERS):
+        return None
+    for phrase in FORBIDDEN_EXECUTION_PHRASES:
+        if phrase in norm:
+            return phrase
+    if "minimize" in norm and "minimization" not in norm:
+        return "minimize"
+    if "production md" in norm:
+        return "production MD"
+    if norm.strip().startswith("dynamics") or " run dynamics" in norm:
+        return "dynamics"
+    return None
 
 
 def scan_forbidden_claim_line(line: str) -> str | None:
@@ -182,6 +230,15 @@ def audit_tracked_files(repo_root: Path | None = None) -> AuditReport:
                 hit = scan_forbidden_claim_line(line)
                 if hit:
                     report.add("forbidden_claims", rel, f"line {line_no}: {hit!r}")
+
+        scan_execution = rel.startswith("src/tdf_product_artifact_builder/") or rel.startswith("tools/")
+        if scan_execution and not any(rel.startswith(prefix) for prefix in EXECUTION_SCAN_ALLOWLIST_PREFIXES):
+            if rel == "tools/static_policy_audit.py":
+                continue
+            for line_no, line in enumerate(text.splitlines(), start=1):
+                hit = scan_forbidden_execution_line(line)
+                if hit:
+                    report.add("simulation_execution", rel, f"line {line_no}: {hit!r}")
 
     engine_dir = root / ENGINE_DIR_REL
     if engine_dir.is_dir():

@@ -15,6 +15,7 @@ from tdf_product_artifact_builder.claim_boundaries import (
 )
 from tdf_product_artifact_builder.manifest import build_manifest, manifest_to_dict, validate_reviewer_manifest
 from tdf_product_artifact_builder.package_writer import (
+    REVIEWER_PACKAGE_EVIDENCE_FILES,
     REVIEWER_PACKAGE_REQUIRED_FILES,
     write_json_file,
     write_text_file,
@@ -22,6 +23,9 @@ from tdf_product_artifact_builder.package_writer import (
 from tdf_product_artifact_builder.product_report import build_product_report, validate_product_report
 from tdf_product_artifact_builder.product_spec import load_product_spec, validate_product_spec
 from tdf_product_artifact_builder.reproducibility import build_reproducibility_md
+from tdf_product_artifact_builder.diagnostic_evidence import build_diagnostic_evidence_summary_md
+from tdf_product_artifact_builder.evidence_adapter import validate_and_adapt_evidence
+from tdf_product_artifact_builder.evidence_manifest import build_evidence_manifest, validate_evidence_manifest
 from tdf_product_artifact_builder.version import __version__
 
 
@@ -37,6 +41,7 @@ class ReviewerPackageReport:
     simulation_authorized: bool
     wet_lab_ready: bool
     readiness_stage: str
+    evidence_included: bool = False
     files_written: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     limitations: list[str] = field(default_factory=list)
@@ -52,7 +57,11 @@ REVIEWER_PACKAGE_LIMITATIONS: list[str] = [
 ]
 
 
-def _build_readme_for_reviewers(spec: dict[str, Any]) -> str:
+def _build_readme_for_reviewers(
+    spec: dict[str, Any],
+    *,
+    include_evidence: bool = False,
+) -> str:
     product_id = str(spec.get("product_id", ""))
     readiness = str(spec.get("readiness_stage", ""))
     target = str(spec.get("target_behavior", ""))
@@ -72,6 +81,12 @@ def _build_readme_for_reviewers(spec: dict[str, Any]) -> str:
     ]
     for name in REVIEWER_PACKAGE_REQUIRED_FILES:
         lines.append(f"- `{name}`")
+    if include_evidence:
+        lines.append("")
+        lines.append("## External diagnostic evidence")
+        lines.append("")
+        for name in REVIEWER_PACKAGE_EVIDENCE_FILES:
+            lines.append(f"- `{name}`")
     lines.extend(
         [
             "",
@@ -105,7 +120,7 @@ def _build_dependencies_md(spec: dict[str, Any]) -> str:
             "- No OpenMM execution.",
             "- No LAMMPS execution.",
             "- No upstream TDF repository API calls.",
-            "- No tdf-openmm-validation integration in this builder version.",
+            "- Evidence contract validation only; no simulation execution.",
             "",
         ]
     )
@@ -196,13 +211,19 @@ def _build_next_validation_requirements_md(spec: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _write_content_files(out: Path, spec: dict[str, Any]) -> list[str]:
+def _write_content_files(
+    out: Path,
+    spec: dict[str, Any],
+    *,
+    evidence_payloads: list[dict[str, Any]] | None = None,
+) -> list[str]:
     """Write all reviewer package content files except manifest and checksums."""
+    include_evidence = bool(evidence_payloads)
     product_report = build_product_report(spec)
     validate_product_report(product_report)
 
     files: list[tuple[str, str | dict[str, Any]]] = [
-        ("README_FOR_REVIEWERS.md", _build_readme_for_reviewers(spec)),
+        ("README_FOR_REVIEWERS.md", _build_readme_for_reviewers(spec, include_evidence=include_evidence)),
         ("PRODUCT_REPORT.json", product_report),
         ("DEPENDENCIES.md", _build_dependencies_md(spec)),
         ("PROVENANCE.md", _build_provenance_md(spec)),
@@ -212,6 +233,30 @@ def _write_content_files(out: Path, spec: dict[str, Any]) -> list[str]:
         ("NO_SIMULATION_NO_WETLAB_STATEMENT.md", _build_no_simulation_statement_md(spec)),
         ("NEXT_VALIDATION_REQUIREMENTS.md", _build_next_validation_requirements_md(spec)),
     ]
+
+    if evidence_payloads:
+        combined = evidence_payloads[0] if len(evidence_payloads) == 1 else {
+            "evidence_id": "combined-evidence-summary",
+            "evidence_type": "diagnostic_preparation_report",
+            "source_tool": evidence_payloads[0]["source_tool"],
+            "source_version": evidence_payloads[0]["source_version"],
+            "diagnostic_flags": evidence_payloads[0]["diagnostic_flags"],
+            "diagnostic_summary": "; ".join(
+                str(item.get("reviewer_summary", "")) for item in evidence_payloads
+            ),
+            "limitations": evidence_payloads[0].get("limitations", []),
+        }
+        manifest = build_evidence_manifest(
+            product_id=str(spec["product_id"]),
+            evidence_payloads=evidence_payloads,
+        )
+        validate_evidence_manifest(manifest)
+        files.extend(
+            [
+                ("DIAGNOSTIC_EVIDENCE_SUMMARY.md", build_diagnostic_evidence_summary_md(combined)),
+                ("EVIDENCE_MANIFEST.json", manifest),
+            ]
+        )
 
     written: list[str] = []
     for name, content in files:
@@ -227,6 +272,8 @@ def _write_content_files(out: Path, spec: dict[str, Any]) -> list[str]:
 def create_reviewer_package(
     product_spec_path: str | Path,
     output_dir: str | Path,
+    *,
+    evidence_paths: list[str | Path] | None = None,
 ) -> ReviewerPackageReport:
     """Create a deterministic reviewer package directory from a product spec."""
     spec_path = Path(product_spec_path)
@@ -250,7 +297,12 @@ def create_reviewer_package(
     if not claim_report.passed:
         raise ValueError(f"Claim boundary validation failed: {claim_report.forbidden_hits}")
 
-    files_written = _write_content_files(out, spec)
+    evidence_payloads: list[dict[str, Any]] = []
+    if evidence_paths:
+        for evidence_path in evidence_paths:
+            evidence_payloads.append(validate_and_adapt_evidence(evidence_path))
+
+    files_written = _write_content_files(out, spec, evidence_payloads=evidence_payloads or None)
 
     generated_claim_report = validate_generated_package_claims(out)
     if not generated_claim_report.passed:
@@ -272,7 +324,10 @@ def create_reviewer_package(
     write_json_file(out / "MANIFEST.json", manifest_dict)
     files_written.append("MANIFEST.json")
 
-    created = all((out / name).is_file() for name in REVIEWER_PACKAGE_REQUIRED_FILES)
+    required_files = list(REVIEWER_PACKAGE_REQUIRED_FILES)
+    if evidence_payloads:
+        required_files.extend(REVIEWER_PACKAGE_EVIDENCE_FILES)
+    created = all((out / name).is_file() for name in required_files)
 
     return ReviewerPackageReport(
         product_id=product_id,
@@ -285,6 +340,7 @@ def create_reviewer_package(
         simulation_authorized=False,
         wet_lab_ready=False,
         readiness_stage=readiness_stage,
+        evidence_included=bool(evidence_payloads),
         files_written=sorted(files_written),
         warnings=list(REVIEWER_PACKAGE_LIMITATIONS),
         limitations=list(REVIEWER_PACKAGE_LIMITATIONS),

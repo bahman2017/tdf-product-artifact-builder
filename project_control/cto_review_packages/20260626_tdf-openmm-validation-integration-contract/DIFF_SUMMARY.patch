@@ -1,0 +1,70 @@
+commit 73d84baaa9926aee6573d2e7158425d2d2e3fa02
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 18:35:01 2026 -0700
+
+    Add tdf-openmm-validation evidence contract
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ project_control/COMPLETED_WORK.md                  |  24 +++-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   2 +
+ project_control/NEXT_ACTIONS.md                    |  11 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |  16 ++-
+ ..._tdf-openmm-validation-integration-contract.zip | Bin 0 -> 16451 bytes
+ .../CHANGED_FILES.txt                              |  31 +++++
+ .../CI_STATUS.md                                   |   7 +
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  53 ++++++++
+ .../CTO_HANDOFF_REPORT.md                          |  14 ++
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   6 +
+ .../DECISION_LOG_SNAPSHOT.md                       |  13 ++
+ .../DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md            |   5 +
+ .../DIFF_SUMMARY.patch                             |  40 ++++++
+ .../EVIDENCE_MANIFEST_AUDIT.md                     |   5 +
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   5 +
+ .../GIT_LOG.txt                                    |  10 ++
+ .../GIT_STATUS.txt                                 |   1 +
+ .../HIDDEN_UNICODE_AUDIT.md                        |   7 +
+ .../MANIFEST.md                                    |  49 +++++++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |   9 ++
+ .../PRODUCT_REPORT_SCHEMA_AUDIT.md                 |   5 +
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  14 ++
+ .../PROMPT_LOG_SNAPSHOT.md                         |   8 ++
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 ++
+ .../REVIEWER_MANIFEST_SCHEMA_AUDIT.md              |   6 +
+ .../REVIEWER_PACKAGE_BUILDER_AUDIT.md              |   8 ++
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  47 +++++++
+ .../REVIEW_SUMMARY.json                            |  35 +++++
+ .../ROADMAP_SNAPSHOT.md                            |  59 ++++++++
+ .../STATIC_POLICY_AUDIT.md                         |   7 +
+ .../TDF_OPENMM_CONTRACT_AUDIT.md                   |   6 +
+ .../TEST_RESULTS.md                                |   4 +
+ schemas/diagnostic_evidence.schema.json            | 109 +++++++++++++++
+ schemas/evidence_manifest.schema.json              |  63 +++++++++
+ schemas/tdf_openmm_validation_evidence.schema.json |  43 ++++++
+ .../diagnostic_evidence.py                         | 118 ++++++++++++++++
+ src/tdf_product_artifact_builder/evidence.py       |  74 ++++++++++
+ .../evidence_adapter.py                            |  31 +++++
+ .../evidence_manifest.py                           |  57 ++++++++
+ src/tdf_product_artifact_builder/package_writer.py |   5 +
+ .../reviewer_package.py                            |  68 +++++++++-
+ .../tdf_openmm_contract.py                         | 149 +++++++++++++++++++++
+ .../tdf_openmm_validation_minimal_evidence.json    |  21 +++
+ tests/test_diagnostic_evidence_schema.py           |  34 +++++
+ tests/test_evidence_claim_boundaries.py            |  23 ++++
+ tests/test_evidence_manifest.py                    |  30 +++++
+ ...st_evidence_rejects_positive_readiness_flags.py |  28 ++++
+ tests/test_no_openmm_lammps_execution.py           |  31 +++++
+ tests/test_reviewer_package_with_evidence.py       |  26 ++++
+ tests/test_tdf_openmm_contract.py                  |  48 +++++++
+ .../test_tdf_openmm_validation_evidence_schema.py  |  34 +++++
+ tests/test_validate_diagnostic_evidence_tool.py    |  32 +++++
+ tools/build_reviewer_package.py                    |  13 +-
+ tools/create_cto_review_bundle.py                  |  33 ++++-
+ tools/static_policy_audit.py                       |  59 +++++++-
+ tools/validate_diagnostic_evidence.py              |  46 +++++++
+ 61 files changed, 1677 insertions(+), 29 deletions(-)

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/tdf_openmm_validation_evidence.schema.json",
+  "title": "TDF OpenMM Validation Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "evidence_type",
+    "source_tool",
+    "source_version",
+    "diagnostic_passed",
+    "lammps_input_executed",
+    "simulation_executed",
+    "accepted_for_simulation",
+    "force_field_ready",
+    "wet_lab_ready",
+    "claim_boundary_passed",
+    "diagnostic_summary",
+    "limitations"
+  ],
+  "properties": {
+    "evidence_id": { "type": "string", "minLength": 1 },
+    "evidence_type": { "type": "string", "minLength": 1 },
+    "source_tool": { "type": "string", "const": "tdf-openmm-validation" },
+    "source_version": { "type": "string", "minLength": 1 },
+    "source_repository": { "type": "string" },
+    "source_commit": { "type": "string" },
+    "diagnostic_passed": { "type": "boolean" },
+    "lammps_input_executed": { "type": "boolean", "const": false },
+    "simulation_executed": { "type": "boolean", "const": false },
+    "accepted_for_simulation": { "type": "boolean", "const": false },
+    "force_field_ready": { "type": "boolean", "const": false },
+    "wet_lab_ready": { "type": "boolean", "const": false },
+    "claim_boundary_passed": { "type": "boolean", "const": true },
+    "diagnostic_summary": { "type": "string", "minLength": 1 },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}

@@ -39,6 +39,9 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "REVIEWER_PACKAGE_BUILDER_AUDIT.md",
     "PRODUCT_REPORT_SCHEMA_AUDIT.md",
     "REVIEWER_MANIFEST_SCHEMA_AUDIT.md",
+    "DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md",
+    "TDF_OPENMM_CONTRACT_AUDIT.md",
+    "EVIDENCE_MANIFEST_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -232,6 +235,28 @@ def create_cto_review_bundle(
         "- CHECKSUMS.sha256.json matches generated content files.\n"
         "- MANIFEST.json self-entry excluded to avoid circular hash.\n",
     )
+    _write(
+        bundle_dir / "DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md",
+        "# Diagnostic evidence schema audit\n\n"
+        "- Schema: `schemas/diagnostic_evidence.schema.json`\n"
+        "- Generic evidence contract with required safety flags.\n"
+        "- Validated in tests using review-safe JSON fixtures only.\n",
+    )
+    _write(
+        bundle_dir / "TDF_OPENMM_CONTRACT_AUDIT.md",
+        "# TDF OpenMM validation contract audit\n\n"
+        "- Schema: `schemas/tdf_openmm_validation_evidence.schema.json`\n"
+        "- Contract validation only; no import or execution of tdf-openmm-validation.\n"
+        "- Required safety flags enforced to false.\n"
+        "- CLI: `tools/validate_diagnostic_evidence.py`\n",
+    )
+    _write(
+        bundle_dir / "EVIDENCE_MANIFEST_AUDIT.md",
+        "# Evidence manifest audit\n\n"
+        "- Schema: `schemas/evidence_manifest.schema.json`\n"
+        "- EVIDENCE_MANIFEST.json generated when evidence inputs provided.\n"
+        "- Deterministic checksums verified in tests.\n",
+    )
 
     ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
     ci_status_value = "NOT_APPLICABLE_FOR_THIS_TASK"
@@ -305,7 +330,7 @@ def create_cto_review_bundle(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
         f"# Cursor feedback summary\n\n"
         f"- Task: {task_name}\n"
-        f"- Generic reviewer package builder hardened.\n"
+        f"- Integration contract layer for tdf-openmm-validation evidence.\n"
         f"- Engine/product separation enforced.\n"
         f"- No simulation or product package generation.\n",
     )
@@ -337,15 +362,15 @@ def create_cto_review_bundle(
         "review_zip_path": review_zip_rel,
         "known_risks": [
             "CI workflow configured locally; GitHub Actions not yet verified until push",
-            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Evidence contract layer only; no live upstream ingestion yet",
             "Real product package generation still blocked pending CTO approval",
         ] if ci_workflow.is_file() else [
             "No CI workflow yet",
-            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Evidence contract layer only; no live upstream ingestion yet",
             "Real product package generation still blocked pending CTO approval",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of reviewer package builder bundle, then PR",
+        "next_recommended_step": "CTO review of integration contract bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)

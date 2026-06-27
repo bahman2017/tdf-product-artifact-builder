@@ -6,6 +6,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+REVIEWER_PACKAGE_EVIDENCE_FILES: tuple[str, ...] = (
+    "DIAGNOSTIC_EVIDENCE_SUMMARY.md",
+    "EVIDENCE_MANIFEST.json",
+)
+
 REVIEWER_PACKAGE_CONTENT_FILES: tuple[str, ...] = (
     "README_FOR_REVIEWERS.md",
     "PRODUCT_REPORT.json",
