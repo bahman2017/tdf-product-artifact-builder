@@ -36,6 +36,9 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "RAW_DATA_AUDIT.md",
     "STATIC_POLICY_AUDIT.md",
     "HIDDEN_UNICODE_AUDIT.md",
+    "REVIEWER_PACKAGE_BUILDER_AUDIT.md",
+    "PRODUCT_REPORT_SCHEMA_AUDIT.md",
+    "REVIEWER_MANIFEST_SCHEMA_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -177,6 +180,7 @@ def create_cto_review_bundle(
         bundle_dir / "GENERATED_OUTPUTS_AUDIT.md",
         "# Generated outputs audit\n\n"
         "- No generated product packages tracked in git.\n"
+        "- Reviewer packages generated only in temporary or /tmp directories.\n"
         "- CTO review bundle under project_control/cto_review_packages/ only.\n",
     )
     _write(
@@ -202,6 +206,32 @@ def create_cto_review_bundle(
     else:
         hidden_audit_lines.append("Final result: FAIL")
     _write(bundle_dir / "HIDDEN_UNICODE_AUDIT.md", "\n".join(hidden_audit_lines) + "\n")
+
+    _write(
+        bundle_dir / "REVIEWER_PACKAGE_BUILDER_AUDIT.md",
+        "# Reviewer package builder audit\n\n"
+        "- Generic reviewer package builder implemented.\n"
+        "- Generates 11 required reviewer files from product spec input.\n"
+        "- Deterministic output verified in tests (temporary directories only).\n"
+        "- Claim-boundary validation on generated outputs.\n"
+        "- No simulation, OpenMM, or LAMMPS execution.\n"
+        "- CLI: `tools/build_reviewer_package.py`\n",
+    )
+    _write(
+        bundle_dir / "PRODUCT_REPORT_SCHEMA_AUDIT.md",
+        "# Product report schema audit\n\n"
+        "- Schema: `schemas/product_report.schema.json`\n"
+        "- PRODUCT_REPORT.json validates against schema in tests.\n"
+        "- Preserves readiness stage; simulation/wet-lab flags remain false.\n",
+    )
+    _write(
+        bundle_dir / "REVIEWER_MANIFEST_SCHEMA_AUDIT.md",
+        "# Reviewer manifest schema audit\n\n"
+        "- Schema: `schemas/reviewer_manifest.schema.json`\n"
+        "- MANIFEST.json validates against schema in tests.\n"
+        "- CHECKSUMS.sha256.json matches generated content files.\n"
+        "- MANIFEST.json self-entry excluded to avoid circular hash.\n",
+    )
 
     ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
     ci_status_value = "NOT_APPLICABLE_FOR_THIS_TASK"
@@ -275,8 +305,9 @@ def create_cto_review_bundle(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
         f"# Cursor feedback summary\n\n"
         f"- Task: {task_name}\n"
-        f"- Foundation scaffold created on empty repository.\n"
-        f"- Engine/product separation enforced.\n",
+        f"- Generic reviewer package builder hardened.\n"
+        f"- Engine/product separation enforced.\n"
+        f"- No simulation or product package generation.\n",
     )
 
     review_summary_path = bundle_dir / "REVIEW_SUMMARY.json"
@@ -306,15 +337,15 @@ def create_cto_review_bundle(
         "review_zip_path": review_zip_rel,
         "known_risks": [
             "CI workflow configured locally; GitHub Actions not yet verified until push",
-            "Reviewer package builder is placeholder scaffold only",
-            "tdf-openmm-validation integration not yet wired",
+            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Real product package generation still blocked pending CTO approval",
         ] if ci_workflow.is_file() else [
             "No CI workflow yet",
-            "Reviewer package builder is placeholder scaffold only",
-            "tdf-openmm-validation integration not yet wired",
+            "Reviewer package builder not yet integrated with tdf-openmm-validation",
+            "Real product package generation still blocked pending CTO approval",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of CI foundation bundle, then PR",
+        "next_recommended_step": "CTO review of reviewer package builder bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)

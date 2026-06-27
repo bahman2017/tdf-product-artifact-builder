@@ -1,0 +1,22 @@
+commit 5ba1034ba0b1d417c796ef26d82f1f3a704a1f88
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 18:10:48 2026 -0700
+
+    Normalize reviewer-facing Unicode text
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ README.md                                          |  2 +-
+ project_control/COMPLETED_WORK.md                  |  8 ++--
+ project_control/PRODUCTIZATION_STRATEGY.md         |  2 +-
+ project_control/PRODUCT_READINESS_LADDER.md        |  4 +-
+ project_control/PROJECT_CHARTER.md                 |  4 +-
+ project_control/ROADMAP.md                         | 16 ++++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  6 +--
+ .../ROADMAP_SNAPSHOT.md                            | 14 +++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  8 ++--
+ .../ROADMAP_SNAPSHOT.md                            | 16 ++++----
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  6 +--
+ .../ROADMAP_SNAPSHOT.md                            | 10 ++---
+ tests/test_reviewer_facing_ascii.py                | 46 ++++++++++++++++++++++
+ 13 files changed, 94 insertions(+), 48 deletions(-)

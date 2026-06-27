@@ -1,0 +1,13 @@
+README.md
+project_control/COMPLETED_WORK.md
+project_control/PRODUCTIZATION_STRATEGY.md
+project_control/PRODUCT_READINESS_LADDER.md
+project_control/PROJECT_CHARTER.md
+project_control/ROADMAP.md
+project_control/cto_review_packages/20260626_ci-static-policy-foundation/COMPLETED_WORK_SNAPSHOT.md
+project_control/cto_review_packages/20260626_ci-static-policy-foundation/ROADMAP_SNAPSHOT.md
+project_control/cto_review_packages/20260626_generic-reviewer-package-builder-hardening/COMPLETED_WORK_SNAPSHOT.md
+project_control/cto_review_packages/20260626_generic-reviewer-package-builder-hardening/ROADMAP_SNAPSHOT.md
+project_control/cto_review_packages/20260626_product-artifact-builder-foundation/COMPLETED_WORK_SNAPSHOT.md
+project_control/cto_review_packages/20260626_product-artifact-builder-foundation/ROADMAP_SNAPSHOT.md
+tests/test_reviewer_facing_ascii.py

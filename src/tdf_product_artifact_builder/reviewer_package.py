@@ -1,16 +1,28 @@
-"""Placeholder reviewer package builder."""
+"""Generic reviewer package builder."""
 
 from __future__ import annotations
 
-import json
 import shutil
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from tdf_product_artifact_builder.claim_boundaries import validate_claim_boundaries
-from tdf_product_artifact_builder.manifest import build_manifest, manifest_to_dict
+from tdf_product_artifact_builder.checksums import build_checksums_payload, verify_checksums_payload
+from tdf_product_artifact_builder.claim_boundaries import (
+    build_claim_boundary_certificate_md,
+    validate_claim_boundaries,
+    validate_generated_package_claims,
+)
+from tdf_product_artifact_builder.manifest import build_manifest, manifest_to_dict, validate_reviewer_manifest
+from tdf_product_artifact_builder.package_writer import (
+    REVIEWER_PACKAGE_REQUIRED_FILES,
+    write_json_file,
+    write_text_file,
+)
+from tdf_product_artifact_builder.product_report import build_product_report, validate_product_report
 from tdf_product_artifact_builder.product_spec import load_product_spec, validate_product_spec
+from tdf_product_artifact_builder.reproducibility import build_reproducibility_md
+from tdf_product_artifact_builder.version import __version__
 
 
 @dataclass(frozen=True)
@@ -19,9 +31,13 @@ class ReviewerPackageReport:
     output_dir: str
     package_created: bool
     manifest_present: bool
+    checksums_present: bool
+    product_report_valid: bool
     claim_boundary_passed: bool
     simulation_authorized: bool
     wet_lab_ready: bool
+    readiness_stage: str
+    files_written: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     limitations: list[str] = field(default_factory=list)
 
@@ -30,47 +46,189 @@ REVIEWER_PACKAGE_LIMITATIONS: list[str] = [
     "Reviewer packages are static handoff bundles only.",
     "No simulation authorization.",
     "No wet-lab readiness claim.",
-    "No TDF physics proof.",
+    "No physical theory validation is claimed.",
+    "No OpenMM or LAMMPS execution.",
+    "Readiness stage is not upgraded by package generation.",
 ]
 
 
-def _write_claim_boundaries_md(path: Path, spec: dict[str, Any]) -> None:
+def _build_readme_for_reviewers(spec: dict[str, Any]) -> str:
+    product_id = str(spec.get("product_id", ""))
+    readiness = str(spec.get("readiness_stage", ""))
+    target = str(spec.get("target_behavior", ""))
     lines = [
-        "# Claim boundaries",
+        "# README for reviewers",
         "",
-        f"- Product ID: `{spec.get('product_id', '')}`",
-        f"- Readiness stage: `{spec.get('readiness_stage', '')}`",
-        "- Diagnostic/preparation scope only.",
-        "- No simulation authorization.",
-        "- No force-field readiness claim.",
-        "- No wet-lab readiness claim.",
-        "- No TDF physics proof claim.",
+        "This package is a reviewer-facing handoff bundle generated from a product spec.",
+        "Build trust in the artifact, not belief in the theory.",
         "",
-        "## Allowed claims",
+        f"- Product ID: `{product_id}`",
+        f"- Product type: `{spec.get('product_type', '')}`",
+        f"- Target behavior: {target}",
+        f"- Readiness stage: `{readiness}`",
+        "",
+        "## Package contents",
         "",
     ]
-    for claim in spec.get("allowed_claims", []):
-        lines.append(f"- {claim}")
-    lines.extend(["", "## Forbidden claims", ""])
-    for claim in spec.get("forbidden_claims", []):
-        lines.append(f"- {claim}")
-    lines.append("")
-    path.write_text("\n".join(lines), encoding="utf-8")
+    for name in REVIEWER_PACKAGE_REQUIRED_FILES:
+        lines.append(f"- `{name}`")
+    lines.extend(
+        [
+            "",
+            "## Review scope",
+            "",
+            "- Static diagnostic and preparation scope only.",
+            "- No simulation, OpenMM, LAMMPS, minimization, dynamics, or production MD.",
+            "- No wet-lab validation or fabrication readiness.",
+            "- Conventional external validation required before any stage advancement.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
 
 
-def _write_limitations_md(path: Path) -> None:
+def _build_dependencies_md(spec: dict[str, Any]) -> str:
+    lines = [
+        "# Dependencies",
+        "",
+        "Reference source artifacts listed in the product spec.",
+        "These are documentation references only; no upstream execution occurs.",
+        "",
+    ]
+    for artifact in spec.get("source_artifacts", []):
+        lines.append(f"- {artifact}")
+    lines.extend(
+        [
+            "",
+            "## Execution boundary",
+            "",
+            "- No OpenMM execution.",
+            "- No LAMMPS execution.",
+            "- No upstream TDF repository API calls.",
+            "- No tdf-openmm-validation integration in this builder version.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def _build_provenance_md(spec: dict[str, Any]) -> str:
+    product_id = str(spec.get("product_id", ""))
+    lines = [
+        "# Provenance",
+        "",
+        f"- Product ID: `{product_id}`",
+        f"- Builder version: `{__version__}`",
+        "- Package type: `reviewer_package`",
+        "- Generation method: generic reviewer package builder",
+        "- engine_hardcoded: `false`",
+        "- simulation_authorized: `false`",
+        "- wet_lab_ready: `false`",
+        "",
+        "## Scope",
+        "",
+        "- Generated from product spec fields only.",
+        "- No simulation artifacts included.",
+        "- No raw coordinate files included.",
+        "- No force-field parameters included.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def _build_limitations_md() -> str:
     lines = ["# Limitations", ""]
     for item in REVIEWER_PACKAGE_LIMITATIONS:
         lines.append(f"- {item}")
     lines.append("")
-    path.write_text("\n".join(lines), encoding="utf-8")
+    return "\n".join(lines)
+
+
+def _build_no_simulation_statement_md(spec: dict[str, Any]) -> str:
+    readiness = str(spec.get("readiness_stage", ""))
+    lines = [
+        "# No simulation / no wet-lab statement",
+        "",
+        "This reviewer package explicitly states the following boundaries:",
+        "",
+        "- No simulation was executed to produce this package.",
+        "- No OpenMM execution occurred.",
+        "- No LAMMPS execution occurred.",
+        "- No minimization, dynamics, or production MD was run.",
+        "- No wet-lab validation was performed.",
+        "- No force-field readiness is claimed.",
+        "- No real selectivity or battery performance is claimed.",
+        f"- Readiness stage remains `{readiness}` and is not upgraded.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def _build_next_validation_requirements_md(spec: dict[str, Any]) -> str:
+    lines = [
+        "# Next validation requirements",
+        "",
+        "External validation requirements from the product spec:",
+        "",
+    ]
+    for req in spec.get("external_validation_requirements", []):
+        lines.append(f"- {req}")
+    lines.extend(
+        [
+            "",
+            "## Required diagnostics",
+            "",
+        ]
+    )
+    for diag in spec.get("required_diagnostics", []):
+        lines.append(f"- {diag}")
+    lines.extend(
+        [
+            "",
+            "## Blocked until CTO approval",
+            "",
+            "- Controlled simulation.",
+            "- Wet-lab/fabrication readiness.",
+            "- Real product package generation.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def _write_content_files(out: Path, spec: dict[str, Any]) -> list[str]:
+    """Write all reviewer package content files except manifest and checksums."""
+    product_report = build_product_report(spec)
+    validate_product_report(product_report)
+
+    files: list[tuple[str, str | dict[str, Any]]] = [
+        ("README_FOR_REVIEWERS.md", _build_readme_for_reviewers(spec)),
+        ("PRODUCT_REPORT.json", product_report),
+        ("DEPENDENCIES.md", _build_dependencies_md(spec)),
+        ("PROVENANCE.md", _build_provenance_md(spec)),
+        ("LIMITATIONS.md", _build_limitations_md()),
+        ("CLAIM_BOUNDARY_CERTIFICATE.md", build_claim_boundary_certificate_md(spec)),
+        ("REPRODUCIBILITY.md", build_reproducibility_md(spec)),
+        ("NO_SIMULATION_NO_WETLAB_STATEMENT.md", _build_no_simulation_statement_md(spec)),
+        ("NEXT_VALIDATION_REQUIREMENTS.md", _build_next_validation_requirements_md(spec)),
+    ]
+
+    written: list[str] = []
+    for name, content in files:
+        path = out / name
+        if isinstance(content, dict):
+            write_json_file(path, content)
+        else:
+            write_text_file(path, content)
+        written.append(name)
+    return written
 
 
 def create_reviewer_package(
     product_spec_path: str | Path,
     output_dir: str | Path,
 ) -> ReviewerPackageReport:
-    """Create a placeholder reviewer package directory from a product spec."""
+    """Create a deterministic reviewer package directory from a product spec."""
     spec_path = Path(product_spec_path)
     out = Path(output_dir)
     if out.exists():
@@ -83,55 +241,51 @@ def create_reviewer_package(
 
     spec = load_product_spec(spec_path)
     product_id = str(spec["product_id"])
-
-    shutil.copy2(spec_path, out / "product_spec.yaml")
-    (out / "PRODUCT_SPEC_SUMMARY.json").write_text(
-        json.dumps(
-            {
-                "product_id": product_id,
-                "product_type": spec.get("product_type"),
-                "readiness_stage": spec.get("readiness_stage"),
-                "engine_hardcoded": False,
-                "simulation_authorized": False,
-                "wet_lab_ready": False,
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-
-    _write_claim_boundaries_md(out / "CLAIM_BOUNDARIES.md", spec)
-    _write_limitations_md(out / "LIMITATIONS.md")
+    readiness_stage = str(spec["readiness_stage"])
 
     claim_report = validate_claim_boundaries(
         allowed_claims=list(spec.get("allowed_claims", [])),
         forbidden_claims=list(spec.get("forbidden_claims", [])),
     )
+    if not claim_report.passed:
+        raise ValueError(f"Claim boundary validation failed: {claim_report.forbidden_hits}")
+
+    files_written = _write_content_files(out, spec)
+
+    generated_claim_report = validate_generated_package_claims(out)
+    if not generated_claim_report.passed:
+        raise ValueError(
+            f"Generated package claim validation failed: {generated_claim_report.forbidden_hits}"
+        )
+
+    checksums_payload = build_checksums_payload(out, product_id=product_id)
+    write_json_file(out / "CHECKSUMS.sha256.json", checksums_payload)
+    files_written.append("CHECKSUMS.sha256.json")
+
+    checksum_errors = verify_checksums_payload(out, checksums_payload)
+    if checksum_errors:
+        raise ValueError(f"Checksum verification failed: {'; '.join(checksum_errors)}")
 
     manifest = build_manifest(out, product_id=product_id)
-    manifest_path = out / "MANIFEST.json"
-    manifest_path.write_text(json.dumps(manifest_to_dict(manifest), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    manifest_dict = manifest_to_dict(manifest)
+    validate_reviewer_manifest(manifest_dict)
+    write_json_file(out / "MANIFEST.json", manifest_dict)
+    files_written.append("MANIFEST.json")
 
-    created = all(
-        [
-            (out / "product_spec.yaml").is_file(),
-            (out / "PRODUCT_SPEC_SUMMARY.json").is_file(),
-            (out / "CLAIM_BOUNDARIES.md").is_file(),
-            (out / "LIMITATIONS.md").is_file(),
-            manifest_path.is_file(),
-        ]
-    )
+    created = all((out / name).is_file() for name in REVIEWER_PACKAGE_REQUIRED_FILES)
 
     return ReviewerPackageReport(
         product_id=product_id,
         output_dir=str(out),
         package_created=created,
-        manifest_present=manifest_path.is_file(),
-        claim_boundary_passed=claim_report.passed,
+        manifest_present=(out / "MANIFEST.json").is_file(),
+        checksums_present=(out / "CHECKSUMS.sha256.json").is_file(),
+        product_report_valid=True,
+        claim_boundary_passed=claim_report.passed and generated_claim_report.passed,
         simulation_authorized=False,
         wet_lab_ready=False,
+        readiness_stage=readiness_stage,
+        files_written=sorted(files_written),
         warnings=list(REVIEWER_PACKAGE_LIMITATIONS),
         limitations=list(REVIEWER_PACKAGE_LIMITATIONS),
     )

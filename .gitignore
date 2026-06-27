@@ -9,6 +9,7 @@ __pycache__/
 !project_control/cto_review_packages/*.zip
 generated_outputs/
 product_packages/
+reviewer_package_output/
 *.pdb
 *.xyz
 *.cif
