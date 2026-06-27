@@ -32,6 +32,7 @@ REQUIRED_SCHEMAS: tuple[str, ...] = (
     "schemas/evidence_acceptance_report.schema.json",
     "schemas/evidence_rejection_report.schema.json",
     "schemas/release_readiness_report.schema.json",
+    "schemas/release_authorization_report.schema.json",
 )
 
 REQUIRED_CLIS: tuple[str, ...] = (
@@ -41,6 +42,7 @@ REQUIRED_CLIS: tuple[str, ...] = (
     "tools/ingest_evidence_directory.py",
     "tools/create_cto_review_bundle.py",
     "tools/release_readiness_audit.py",
+    "tools/release_authorization_review.py",
 )
 
 REQUIRED_PROJECT_CONTROL_DOCS: tuple[str, ...] = (

@@ -49,6 +49,8 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "NO_RELEASE_ACTIONS_AUDIT.md",
     "RELEASE_CANDIDATE_AUDIT.md",
     "RELEASE_NOTES_DRAFT_AUDIT.md",
+    "RELEASE_AUTHORIZATION_AUDIT.md",
+    "RELEASE_DRAFT_CHECKLIST_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -351,6 +353,22 @@ def create_cto_review_bundle(
         "- CHANGELOG.md updated for release candidate.\n"
         "- Draft states no tag, release, publish, product package, or simulation.\n",
     )
+    _write(
+        bundle_dir / "RELEASE_AUTHORIZATION_AUDIT.md",
+        "# Release authorization audit\n\n"
+        "- Schema: `schemas/release_authorization_report.schema.json`\n"
+        "- CLI: `tools/release_authorization_review.py`\n"
+        "- Authorization review only; no tag, release, or publish actions.\n"
+        "- Decisions: APPROVED FOR RELEASE DRAFT, BLOCKED, or CTO_REVIEW_REQUIRED only.\n"
+        "- Does not declare APPROVED TO RELEASE or APPROVED TO PUBLISH.\n",
+    )
+    _write(
+        bundle_dir / "RELEASE_DRAFT_CHECKLIST_AUDIT.md",
+        "# Release draft checklist audit\n\n"
+        "- RELEASE_DRAFT_CHECKLIST.md generated under project_control/release_authorization/v0.1.0/.\n"
+        "- Verifies version, tests, static policy, release-readiness artifacts, and safety invariants.\n"
+        "- TAG_RELEASE_PUBLISH_PLAN.md is documentation only; commands marked PLANNED ONLY.\n",
+    )
 
     ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
     ci_status_value = "NOT_APPLICABLE_FOR_THIS_TASK"
@@ -420,12 +438,21 @@ def create_cto_review_bundle(
         f"- Package version: 0.1.0\n\n"
         f"Authoritative repository state: `git rev-parse HEAD` after checkout.\n",
     )
+    if "authorization" in task_name:
+        task_summary = (
+            "- v0.1.0 release authorization review only.\n"
+            "- Evaluates readiness for future release draft; no tag, release, or publish.\n"
+        )
+    else:
+        task_summary = (
+            "- v0.1.0 release-candidate finalization only.\n"
+            "- Version metadata at 0.1.0; no tag, release, or publish.\n"
+        )
     _write(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
         f"# Cursor feedback summary\n\n"
         f"- Task: {task_name}\n"
-        f"- v0.1.0 release-candidate finalization only.\n"
-        f"- Version metadata bumped to 0.1.0; no tag, release, or publish.\n"
+        f"{task_summary}"
         f"- Engine/product separation enforced.\n"
         f"- No simulation or product package generation.\n",
     )
@@ -457,15 +484,15 @@ def create_cto_review_bundle(
         "review_zip_path": review_zip_rel,
         "known_risks": [
             "CI workflow configured locally; GitHub Actions not yet verified until push",
-            "Release-candidate metadata only; no tag, release, or publish performed",
+            "Release authorization review only; no tag, release, or publish performed",
             "Real product package generation still blocked pending CTO approval",
         ] if ci_workflow.is_file() else [
             "No CI workflow yet",
-            "Release-candidate metadata only; no tag, release, or publish performed",
+            "Release authorization review only; no tag, release, or publish performed",
             "Real product package generation still blocked pending CTO approval",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of release-candidate bundle, then PR",
+        "next_recommended_step": "CTO review of release authorization bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)
