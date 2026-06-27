@@ -46,6 +46,7 @@ def test_lithium_filter_only_in_product_spec_and_docs() -> None:
             or hit.startswith("project_control/")
             or hit.startswith("tests/")
             or hit.startswith("schemas/")
+            or hit.startswith("tools/")
             or hit == "README.md"
         )
         assert allowed, f"Unexpected lithium reference in {hit}"

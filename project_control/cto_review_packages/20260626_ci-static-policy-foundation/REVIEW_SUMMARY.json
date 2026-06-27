@@ -1,0 +1,35 @@
+{
+  "authoritative_commit": "7e639d8a5e3b24e19f8ea6ceca1d817a0a7d010b",
+  "base_commit": "0a67db9f6e2a2200214f447d7d7cc78e16cdfb96",
+  "blockers": [
+    "CTO review required before push"
+  ],
+  "branch": "feature/ci-static-policy-foundation",
+  "bundle_generated_after_commit": "7e639d8a5e3b24e19f8ea6ceca1d817a0a7d010b",
+  "ci_status": "CONFIGURED_LOCAL_ONLY_NOT_YET_RUN_ON_GITHUB",
+  "claim_boundary_passed": true,
+  "completed_work_updated": true,
+  "cto_review_zip_created": true,
+  "cursor_feedback_log_updated": true,
+  "decision_log_updated": true,
+  "generated_outputs_tracked": true,
+  "head_commit": "7e639d8a5e3b24e19f8ea6ceca1d817a0a7d010b",
+  "known_risks": [
+    "CI workflow configured locally; GitHub Actions not yet verified until push",
+    "Reviewer package builder is placeholder scaffold only",
+    "tdf-openmm-validation integration not yet wired"
+  ],
+  "known_self_reference_limitation": "The review bundle is generated after the source commit; final git rev-parse HEAD is authoritative for repository state including bundle files. head_commit identifies the reviewed source revision.",
+  "metadata_commit_consistent": true,
+  "next_actions_updated": true,
+  "next_recommended_step": "CTO review of CI foundation bundle, then PR",
+  "product_readiness_stage": "TDF_DESIGN_CANDIDATE",
+  "prompt_log_updated": true,
+  "raw_data_committed": false,
+  "repository": "https://github.com/bahman2017/tdf-product-artifact-builder",
+  "review_bundle_metadata_mode": "POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION",
+  "review_zip_path": "project_control/cto_review_packages/20260626_ci-static-policy-foundation.zip",
+  "task_name": "ci-static-policy-foundation",
+  "tests_passed": true,
+  "tests_run": "pytest -q"
+}
