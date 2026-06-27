@@ -1,0 +1,73 @@
+commit 00f17e6111ef4c1334d6855eff9192ac3bdd70f3
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Sat Jun 27 11:37:40 2026 -0700
+
+    Add v0.1.0 release authorization review
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ project_control/COMPLETED_WORK.md                  |  20 +-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   3 +-
+ project_control/NEXT_ACTIONS.md                    |   8 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |  11 +-
+ ...0260627_v0.1.0-release-authorization-review.zip | Bin 0 -> 23056 bytes
+ .../CHANGED_FILES.txt                              |  64 +++
+ .../CI_STATUS.md                                   |   7 +
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  98 +++++
+ .../CTO_HANDOFF_REPORT.md                          |  14 +
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   7 +
+ .../DECISION_LOG_SNAPSHOT.md                       |  19 +
+ .../DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md            |   5 +
+ .../DIFF_SUMMARY.patch                             |  73 +++
+ .../EVIDENCE_ACCEPTANCE_REJECTION_AUDIT.md         |   6 +
+ .../EVIDENCE_INGESTION_AUDIT.md                    |   7 +
+ .../EVIDENCE_MANIFEST_AUDIT.md                     |   5 +
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   5 +
+ .../GIT_LOG.txt                                    |  18 +
+ .../GIT_STATUS.txt                                 |  38 ++
+ .../HIDDEN_UNICODE_AUDIT.md                        |   8 +
+ .../MANIFEST.md                                    |  58 +++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |  10 +
+ .../NO_RELEASE_ACTIONS_AUDIT.md                    |   5 +
+ .../PRODUCT_REPORT_SCHEMA_AUDIT.md                 |   5 +
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  14 +
+ .../PROMPT_LOG_SNAPSHOT.md                         |  12 +
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_AUTHORIZATION_AUDIT.md                 |   7 +
+ .../RELEASE_BLOCKERS_AUDIT.md                      |   5 +
+ .../RELEASE_CANDIDATE_AUDIT.md                     |   5 +
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +
+ .../RELEASE_DRAFT_CHECKLIST_AUDIT.md               |   5 +
+ .../RELEASE_NOTES_DRAFT_AUDIT.md                   |   5 +
+ .../RELEASE_READINESS_AUDIT.md                     |   6 +
+ .../REVIEWER_MANIFEST_SCHEMA_AUDIT.md              |   6 +
+ .../REVIEWER_PACKAGE_BUILDER_AUDIT.md              |   8 +
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  56 +++
+ .../REVIEW_SUMMARY.json                            |  35 ++
+ .../ROADMAP_SNAPSHOT.md                            |  93 ++++
+ .../STATIC_POLICY_AUDIT.md                         |  45 ++
+ .../TDF_OPENMM_CONTRACT_AUDIT.md                   |   6 +
+ .../TEST_RESULTS.md                                |   4 +
+ .../v0.1.0/CTO_APPROVAL_REQUIRED.md                |  16 +
+ .../v0.1.0/NO_RELEASE_ACTIONS_TAKEN.md             |  14 +
+ .../v0.1.0/RELEASE_AUTHORIZATION_REPORT.json       | 101 +++++
+ .../v0.1.0/RELEASE_AUTHORIZATION_REPORT.md         |  47 ++
+ .../v0.1.0/RELEASE_DRAFT_CHECKLIST.md              |  22 +
+ .../v0.1.0/TAG_RELEASE_PUBLISH_PLAN.md             |  31 ++
+ .../v0.1.0/RELEASE_READINESS_REPORT.json           |  10 +-
+ .../v0.1.0/RELEASE_READINESS_REPORT.md             |  10 +-
+ schemas/release_authorization_report.schema.json   | 119 +++++
+ .../release_authorization.py                       | 490 +++++++++++++++++++++
+ .../release_readiness.py                           |   2 +
+ .../test_release_authorization_claim_boundaries.py |  25 ++
+ tests/test_release_authorization_full_pass.py      |  27 ++
+ ...est_release_authorization_no_release_actions.py |  28 ++
+ tests/test_release_authorization_review.py         |  45 ++
+ tests/test_release_authorization_schema.py         |  60 +++
+ tools/create_cto_review_bundle.py                  |  37 +-
+ tools/release_authorization_review.py              |  61 +++
+ 64 files changed, 1948 insertions(+), 27 deletions(-)

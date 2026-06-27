@@ -1,0 +1,101 @@
+{
+  "base_commit": "b79987acc43c1d8a767f40892495ac751982f40d",
+  "checks": {
+    "changelog_exists": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
+    "claim_boundaries_explicit": {
+      "detail": "Claim boundaries documented",
+      "status": "PASS"
+    },
+    "no_github_release_from_this_task": {
+      "detail": "No GitHub release created by this review",
+      "status": "PASS"
+    },
+    "no_package_publish_from_this_task": {
+      "detail": "No package publish by this review",
+      "status": "PASS"
+    },
+    "no_readiness_stage_upgrade": {
+      "detail": "Readiness stage remains TDF_DESIGN_CANDIDATE",
+      "status": "PASS"
+    },
+    "no_simulation_executed": {
+      "detail": "No simulation executed",
+      "status": "PASS"
+    },
+    "no_tag_from_this_task": {
+      "detail": "No tag created by this review",
+      "status": "PASS"
+    },
+    "no_tag_no_publish_statement_exists": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
+    "no_tracked_product_package_generated": {
+      "detail": "No tracked product package generated",
+      "status": "PASS"
+    },
+    "product_spec_registry_current": {
+      "detail": "Product spec registry current for reference product",
+      "status": "PASS"
+    },
+    "project_control_docs_updated": {
+      "detail": "All 12 required files present",
+      "status": "PASS"
+    },
+    "release_candidate_checklist_exists": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
+    "release_notes_draft_exists": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
+    "release_readiness_decision_ready": {
+      "detail": "release_readiness_decision=READY_FOR_RELEASE_DRAFT",
+      "status": "PASS"
+    },
+    "release_readiness_report_exists": {
+      "detail": "project_control/release_readiness/v0.1.0/RELEASE_READINESS_REPORT.json",
+      "status": "PASS"
+    },
+    "static_policy_passes": {
+      "detail": "All tracked-file static policy checks passed.",
+      "status": "PASS"
+    },
+    "tests_pass": {
+      "detail": "117 passed, 2 skipped in 12.63s",
+      "status": "PASS"
+    },
+    "version_is_0_1_0": {
+      "detail": "package __version__=0.1.0, target=0.1.0",
+      "status": "PASS"
+    }
+  },
+  "generated_at_commit": "81bce3d5561ad954387df29fe7bad448248e8a26",
+  "github_release_created": false,
+  "governance_notes": [
+    "Tag, GitHub release, and PyPI publish require separate explicit CTO approval",
+    "APPROVED FOR RELEASE DRAFT does not authorize final release or package publish",
+    "Real product package generation blocked pending CTO approval",
+    "Runtime integration with tdf-openmm-validation blocked"
+  ],
+  "known_blockers": [],
+  "lammps_executed": false,
+  "openmm_executed": false,
+  "package_published": false,
+  "package_version": "0.1.0",
+  "readiness_stage_upgraded": false,
+  "release_action_taken": false,
+  "release_authorization_decision": "APPROVED FOR RELEASE DRAFT",
+  "release_readiness_decision": "READY_FOR_RELEASE_DRAFT",
+  "report_version": "1.0",
+  "repository": "https://github.com/bahman2017/tdf-product-artifact-builder",
+  "runtime_tdf_openmm_validation_import": false,
+  "simulation_executed": false,
+  "tag_created": false,
+  "target_version": "0.1.0",
+  "tracked_product_package_generated": false
+}

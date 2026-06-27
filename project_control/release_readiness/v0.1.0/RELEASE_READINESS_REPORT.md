@@ -1,8 +1,8 @@
 # Release readiness report
 
 - Target version: `0.1.0`
-- Base commit: `e46844919cc7adc9bf4aafb5aeecb6ba6f8d0c8a`
-- Generated at commit: `6d1f8b31607e3d4fbfb1a77f62faed2722e5c00f`
+- Base commit: `b79987acc43c1d8a767f40892495ac751982f40d`
+- Generated at commit: `81bce3d5561ad954387df29fe7bad448248e8a26`
 - Package version: `0.1.0`
 - Pyproject version: `0.1.0`
 - Decision: **READY_FOR_RELEASE_DRAFT**
@@ -23,11 +23,11 @@
 |-------|--------|--------|
 | package_metadata | PASS | Package metadata present in pyproject.toml and README.md |
 | version_consistency | PASS | Versions aligned with target 0.1.0: __version__=0.1.0, pyproject=0.1.0 |
-| required_schemas_present | PASS | All 11 required files present |
-| required_clis_present | PASS | All 6 required files present |
+| required_schemas_present | PASS | All 12 required files present |
+| required_clis_present | PASS | All 7 required files present |
 | required_project_control_docs_present | PASS | All 12 required files present |
 | required_cto_bundle_requirements_present | PASS | CTO review bundle requirements documented and referenced |
-| tests_passed_status | PASS | 112 passed, 1 skipped in 9.70s |
+| tests_passed_status | PASS | 117 passed, 2 skipped in 12.97s |
 | static_policy_status | PASS | PASS |
 | ascii_policy_status | PASS | Reviewer-facing tracked text is ASCII-only |
 | raw_file_policy_status | PASS | No raw coordinate files tracked |
