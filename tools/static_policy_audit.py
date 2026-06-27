@@ -78,6 +78,7 @@ EXECUTION_SCAN_ALLOWLIST_PREFIXES = (
     "tools/static_policy_audit.py",
     "tools/validate_diagnostic_evidence.py",
     "tools/ingest_evidence_directory.py",
+    "tools/release_readiness_audit.py",
     "project_control/",
     "schemas/",
 )

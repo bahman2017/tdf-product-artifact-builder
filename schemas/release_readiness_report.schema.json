@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/release_readiness_report.schema.json",
+  "title": "TDF Release Readiness Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "target_version",
+    "base_commit",
+    "repository",
+    "package_version",
+    "pyproject_version",
+    "release_action_taken",
+    "tag_created",
+    "github_release_created",
+    "package_published",
+    "simulation_executed",
+    "openmm_executed",
+    "lammps_executed",
+    "runtime_tdf_openmm_validation_import",
+    "tracked_product_package_generated",
+    "readiness_stage_upgraded",
+    "checks",
+    "known_blockers",
+    "release_readiness_decision",
+    "generated_at_commit"
+  ],
+  "properties": {
+    "report_version": { "type": "string", "const": "1.0" },
+    "target_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "base_commit": { "type": "string", "minLength": 7 },
+    "repository": { "type": "string", "minLength": 1 },
+    "package_version": { "type": "string", "minLength": 1 },
+    "pyproject_version": { "type": "string", "minLength": 1 },
+    "release_action_taken": { "type": "boolean", "const": false },
+    "tag_created": { "type": "boolean", "const": false },
+    "github_release_created": { "type": "boolean", "const": false },
+    "package_published": { "type": "boolean", "const": false },
+    "simulation_executed": { "type": "boolean", "const": false },
+    "openmm_executed": { "type": "boolean", "const": false },
+    "lammps_executed": { "type": "boolean", "const": false },
+    "runtime_tdf_openmm_validation_import": { "type": "boolean", "const": false },
+    "tracked_product_package_generated": { "type": "boolean", "const": false },
+    "readiness_stage_upgraded": { "type": "boolean", "const": false },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_metadata",
+        "version_consistency",
+        "required_schemas_present",
+        "required_clis_present",
+        "required_project_control_docs_present",
+        "required_cto_bundle_requirements_present",
+        "tests_passed_status",
+        "static_policy_status",
+        "ascii_policy_status",
+        "raw_file_policy_status",
+        "secret_file_policy_status",
+        "generated_output_policy_status",
+        "engine_product_separation_status",
+        "reference_product_spec_status",
+        "reviewer_package_builder_status",
+        "evidence_contract_status",
+        "external_evidence_ingestion_status",
+        "claim_boundary_status",
+        "release_chain_status"
+      ],
+      "properties": {
+        "package_metadata": { "$ref": "#/$defs/check_result" },
+        "version_consistency": { "$ref": "#/$defs/check_result" },
+        "required_schemas_present": { "$ref": "#/$defs/check_result" },
+        "required_clis_present": { "$ref": "#/$defs/check_result" },
+        "required_project_control_docs_present": { "$ref": "#/$defs/check_result" },
+        "required_cto_bundle_requirements_present": { "$ref": "#/$defs/check_result" },
+        "tests_passed_status": { "$ref": "#/$defs/check_result" },
+        "static_policy_status": { "$ref": "#/$defs/check_result" },
+        "ascii_policy_status": { "$ref": "#/$defs/check_result" },
+        "raw_file_policy_status": { "$ref": "#/$defs/check_result" },
+        "secret_file_policy_status": { "$ref": "#/$defs/check_result" },
+        "generated_output_policy_status": { "$ref": "#/$defs/check_result" },
+        "engine_product_separation_status": { "$ref": "#/$defs/check_result" },
+        "reference_product_spec_status": { "$ref": "#/$defs/check_result" },
+        "reviewer_package_builder_status": { "$ref": "#/$defs/check_result" },
+        "evidence_contract_status": { "$ref": "#/$defs/check_result" },
+        "external_evidence_ingestion_status": { "$ref": "#/$defs/check_result" },
+        "claim_boundary_status": { "$ref": "#/$defs/check_result" },
+        "release_chain_status": { "$ref": "#/$defs/check_result" }
+      }
+    },
+    "known_blockers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "release_readiness_decision": {
+      "type": "string",
+      "enum": ["READY_FOR_RELEASE_DRAFT", "BLOCKED", "CTO_REVIEW_REQUIRED"]
+    },
+    "generated_at_commit": { "type": "string", "minLength": 7 }
+  },
+  "$defs": {
+    "check_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detail"],
+      "properties": {
+        "status": { "type": "string", "enum": ["PASS", "FAIL", "WARN"] },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+commit 3a0f7b25ac29a7cf5b18df1da4be841e9827ec1f
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 21:08:26 2026 -0700
+
+    Add v0.1.0 release-readiness audit
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ project_control/COMPLETED_WORK.md                  |  23 +-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   2 +
+ project_control/NEXT_ACTIONS.md                    |  10 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |  16 +-
+ .../v0.1.0/NO_RELEASE_ACTIONS_TAKEN.md             |  15 +
+ .../release_readiness/v0.1.0/RELEASE_BLOCKERS.md   |   8 +
+ .../v0.1.0/RELEASE_READINESS_REPORT.json           | 104 ++++
+ .../v0.1.0/RELEASE_READINESS_REPORT.md             |  49 ++
+ schemas/release_readiness_report.schema.json       | 113 ++++
+ .../release_readiness.py                           | 576 +++++++++++++++++++++
+ tests/test_release_readiness_audit.py              |  67 +++
+ tests/test_release_readiness_claim_boundaries.py   |  42 ++
+ tests/test_release_readiness_no_release_actions.py |  50 ++
+ tests/test_release_readiness_schema.py             |  17 +
+ tools/create_cto_review_bundle.py                  |  35 +-
+ tools/release_readiness_audit.py                   |  61 +++
+ tools/static_policy_audit.py                       |   1 +
+ 20 files changed, 1175 insertions(+), 19 deletions(-)

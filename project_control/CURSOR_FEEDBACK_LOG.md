@@ -11,3 +11,5 @@
 | 2026-06-27 | Started tdf-openmm-validation integration contract layer; schemas and validators only, no execution |
 | 2026-06-27 | PR #4 merged to main (`6f726b9`); 91 tests passed; Unicode cleanup; evidence contract layer complete |
 | 2026-06-27 | Started review-safe external evidence ingestion workflow; file-based directory ingestion only |
+| 2026-06-27 | PR #5 merged to main (`5ca67cc`); 105 tests passed; external evidence ingestion complete |
+| 2026-06-27 | Started v0.1.0 release-readiness audit; audit-only, no tag/release/publish |
