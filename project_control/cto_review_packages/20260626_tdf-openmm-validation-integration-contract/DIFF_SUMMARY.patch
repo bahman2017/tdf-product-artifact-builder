@@ -1,4 +1,4 @@
-commit 73d84baaa9926aee6573d2e7158425d2d2e3fa02
+commit ce43aa454453514327cc4f1c63063f203dde1245
 Author: bahman2017 <bmasarrat@gmail.com>
 Date:   Fri Jun 26 18:35:01 2026 -0700
 
@@ -13,8 +13,8 @@ Date:   Fri Jun 26 18:35:01 2026 -0700
  project_control/PROMPT_LOG.md                      |   1 +
  project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
  project_control/ROADMAP.md                         |  16 ++-
- ..._tdf-openmm-validation-integration-contract.zip | Bin 0 -> 16451 bytes
- .../CHANGED_FILES.txt                              |  31 +++++
+ ..._tdf-openmm-validation-integration-contract.zip | Bin 0 -> 17663 bytes
+ .../CHANGED_FILES.txt                              |  61 +++++++++
  .../CI_STATUS.md                                   |   7 +
  .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
  .../COMPLETED_WORK_SNAPSHOT.md                     |  53 ++++++++
@@ -22,11 +22,11 @@ Date:   Fri Jun 26 18:35:01 2026 -0700
  .../CURSOR_FEEDBACK_SUMMARY.md                     |   6 +
  .../DECISION_LOG_SNAPSHOT.md                       |  13 ++
  .../DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md            |   5 +
- .../DIFF_SUMMARY.patch                             |  40 ++++++
+ .../DIFF_SUMMARY.patch                             |  70 ++++++++++
  .../EVIDENCE_MANIFEST_AUDIT.md                     |   5 +
  .../GENERATED_OUTPUTS_AUDIT.md                     |   5 +
  .../GIT_LOG.txt                                    |  10 ++
- .../GIT_STATUS.txt                                 |   1 +
+ .../GIT_STATUS.txt                                 |  29 ++++
  .../HIDDEN_UNICODE_AUDIT.md                        |   7 +
  .../MANIFEST.md                                    |  49 +++++++
  .../NEXT_ACTIONS_SNAPSHOT.md                       |   9 ++
@@ -67,4 +67,4 @@ Date:   Fri Jun 26 18:35:01 2026 -0700
  tools/create_cto_review_bundle.py                  |  33 ++++-
  tools/static_policy_audit.py                       |  59 +++++++-
  tools/validate_diagnostic_evidence.py              |  46 +++++++
- 61 files changed, 1677 insertions(+), 29 deletions(-)
+ 61 files changed, 1765 insertions(+), 29 deletions(-)

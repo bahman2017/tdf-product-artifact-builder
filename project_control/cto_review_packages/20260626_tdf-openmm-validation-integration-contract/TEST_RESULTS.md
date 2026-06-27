@@ -1,4 +1,4 @@
 # Test results
 
-- Command: `pytest -q (89 passed)`
+- Command: `pytest -q`
 - Passed: `True`

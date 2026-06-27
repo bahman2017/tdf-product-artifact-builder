@@ -1,3 +1,6 @@
+ M project_control/cto_review_packages/20260626_ci-static-policy-foundation.zip
+ M project_control/cto_review_packages/20260626_generic-reviewer-package-builder-hardening.zip
+ M project_control/cto_review_packages/20260626_product-artifact-builder-foundation.zip
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/CHANGED_FILES.txt
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/CI_STATUS.md
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/CLAIM_BOUNDARY_AUDIT.md
@@ -27,3 +30,6 @@
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/STATIC_POLICY_AUDIT.md
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/TDF_OPENMM_CONTRACT_AUDIT.md
  D project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract/TEST_RESULTS.md
+ M tests/test_reviewer_facing_ascii.py
+ M tools/create_cto_review_bundle.py
+ M tools/static_policy_audit.py

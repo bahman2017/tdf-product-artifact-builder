@@ -7,6 +7,7 @@ import argparse
 import subprocess
 import sys
 import unicodedata
+import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -101,6 +102,24 @@ REVIEWER_DOC_PATHS = (
     "project_control/RELEASE_CHAIN_STATUS.md",
 )
 
+REVIEWER_FACING_PREFIXES: tuple[str, ...] = (
+    "README.md",
+    "project_control/",
+    "product_specs/",
+    "schemas/",
+    "tools/",
+    "src/",
+    "tests/fixtures/review_safe/",
+)
+
+REVIEWER_FACING_SUFFIXES: frozenset[str] = frozenset(
+    {".md", ".yaml", ".yml", ".json", ".txt", ".patch", ".py", ".toml"}
+)
+
+CTO_REVIEW_ZIP_TEXT_SUFFIXES: frozenset[str] = frozenset(
+    {".md", ".yaml", ".yml", ".json", ".txt", ".patch"}
+)
+
 ALLOWED_CONTROL = {"\n", "\r", "\t"}
 
 
@@ -124,6 +143,24 @@ def tracked_files(repo_root: Path | None = None) -> list[Path]:
     root = repo_root or REPO_ROOT
     out = subprocess.check_output(["git", "ls-files"], cwd=root, text=True)
     return [root / line for line in out.splitlines() if line.strip()]
+
+
+def is_reviewer_facing_text(rel: str) -> bool:
+    """Return True if a tracked relative path is reviewer-facing text."""
+    if not any(rel == prefix or rel.startswith(prefix) for prefix in REVIEWER_FACING_PREFIXES):
+        return False
+    return Path(rel).suffix.lower() in REVIEWER_FACING_SUFFIXES
+
+
+def scan_non_ascii(text: str) -> list[tuple[int, str, str]]:
+    """Return (line, codepoint, name) for non-ASCII characters."""
+    hits: list[tuple[int, str, str]] = []
+    for i, ch in enumerate(text):
+        if ord(ch) <= 127:
+            continue
+        line = text.count("\n", 0, i) + 1
+        hits.append((line, f"U+{ord(ch):04X}", unicodedata.name(ch, "UNKNOWN")))
+    return hits
 
 
 def scan_hidden_unicode(text: str) -> list[tuple[int, str, str]]:
@@ -223,6 +260,10 @@ def audit_tracked_files(repo_root: Path | None = None) -> AuditReport:
         for line_no, codepoint, name in scan_hidden_unicode(text):
             report.add("hidden_unicode", rel, f"line {line_no}: {codepoint} {name}")
 
+        if is_reviewer_facing_text(rel):
+            for line_no, codepoint, name in scan_non_ascii(text):
+                report.add("reviewer_ascii", rel, f"line {line_no}: {codepoint} {name}")
+
         if rel in REVIEWER_DOC_PATHS or rel.startswith("project_control/") and rel.endswith(".md"):
             if rel.endswith("CLAIM_BOUNDARIES.md") or "/templates/" in rel:
                 continue
@@ -239,6 +280,38 @@ def audit_tracked_files(repo_root: Path | None = None) -> AuditReport:
                 hit = scan_forbidden_execution_line(line)
                 if hit:
                     report.add("simulation_execution", rel, f"line {line_no}: {hit!r}")
+
+    cto_zip_root = root / "project_control" / "cto_review_packages"
+    if cto_zip_root.is_dir():
+        for zip_path in sorted(cto_zip_root.glob("*.zip")):
+            rel_zip = str(zip_path.relative_to(root))
+            try:
+                with zipfile.ZipFile(zip_path) as zf:
+                    for info in zf.infolist():
+                        if info.is_dir():
+                            continue
+                        member = info.filename
+                        if Path(member).suffix.lower() not in CTO_REVIEW_ZIP_TEXT_SUFFIXES:
+                            continue
+                        try:
+                            member_text = zf.read(info).decode("utf-8")
+                        except UnicodeDecodeError:
+                            report.add("reviewer_ascii", rel_zip, f"non-utf8 member {member}")
+                            continue
+                        for line_no, codepoint, name in scan_hidden_unicode(member_text):
+                            report.add(
+                                "hidden_unicode",
+                                f"{rel_zip}:{member}",
+                                f"line {line_no}: {codepoint} {name}",
+                            )
+                        for line_no, codepoint, name in scan_non_ascii(member_text):
+                            report.add(
+                                "reviewer_ascii",
+                                f"{rel_zip}:{member}",
+                                f"line {line_no}: {codepoint} {name}",
+                            )
+            except (OSError, zipfile.BadZipFile) as exc:
+                report.add("reviewer_ascii", rel_zip, f"zip read failed: {exc}")
 
     engine_dir = root / ENGINE_DIR_REL
     if engine_dir.is_dir():

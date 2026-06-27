@@ -1,11 +1,11 @@
 {
-  "authoritative_commit": "73d84baaa9926aee6573d2e7158425d2d2e3fa02",
-  "base_commit": "6976a32e95949449cb57a386dfb6dc800019d191",
+  "authoritative_commit": "ce43aa454453514327cc4f1c63063f203dde1245",
+  "base_commit": "INITIAL_EMPTY_REPOSITORY",
   "blockers": [
     "CTO review required before push"
   ],
   "branch": "feature/tdf-openmm-validation-integration-contract",
-  "bundle_generated_after_commit": "73d84baaa9926aee6573d2e7158425d2d2e3fa02",
+  "bundle_generated_after_commit": "ce43aa454453514327cc4f1c63063f203dde1245",
   "ci_status": "CONFIGURED_LOCAL_ONLY_NOT_YET_RUN_ON_GITHUB",
   "claim_boundary_passed": true,
   "completed_work_updated": true,
@@ -13,7 +13,7 @@
   "cursor_feedback_log_updated": true,
   "decision_log_updated": true,
   "generated_outputs_tracked": true,
-  "head_commit": "73d84baaa9926aee6573d2e7158425d2d2e3fa02",
+  "head_commit": "ce43aa454453514327cc4f1c63063f203dde1245",
   "known_risks": [
     "CI workflow configured locally; GitHub Actions not yet verified until push",
     "Evidence contract layer only; no live upstream ingestion yet",
@@ -31,5 +31,5 @@
   "review_zip_path": "project_control/cto_review_packages/20260626_tdf-openmm-validation-integration-contract.zip",
   "task_name": "tdf-openmm-validation-integration-contract",
   "tests_passed": true,
-  "tests_run": "pytest -q (89 passed)"
+  "tests_run": "pytest -q"
 }
