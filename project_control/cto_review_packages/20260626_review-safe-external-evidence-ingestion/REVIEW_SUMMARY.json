@@ -1,0 +1,35 @@
+{
+  "authoritative_commit": "792a22b27a5efa7807bdaaee73db2514b3bce684",
+  "base_commit": "6f726b92ea0eb72ce939a2777e97e267ac45f4c7",
+  "blockers": [
+    "CTO review required before push"
+  ],
+  "branch": "feature/review-safe-external-evidence-ingestion",
+  "bundle_generated_after_commit": "792a22b27a5efa7807bdaaee73db2514b3bce684",
+  "ci_status": "CONFIGURED_LOCAL_ONLY_NOT_YET_RUN_ON_GITHUB",
+  "claim_boundary_passed": true,
+  "completed_work_updated": true,
+  "cto_review_zip_created": true,
+  "cursor_feedback_log_updated": true,
+  "decision_log_updated": true,
+  "generated_outputs_tracked": true,
+  "head_commit": "792a22b27a5efa7807bdaaee73db2514b3bce684",
+  "known_risks": [
+    "CI workflow configured locally; GitHub Actions not yet verified until push",
+    "External evidence ingestion is file-based only; no live upstream API calls",
+    "Real product package generation still blocked pending CTO approval"
+  ],
+  "known_self_reference_limitation": "The review bundle is generated after the source commit; final git rev-parse HEAD is authoritative for repository state including bundle files. head_commit identifies the reviewed source revision.",
+  "metadata_commit_consistent": true,
+  "next_actions_updated": true,
+  "next_recommended_step": "CTO review of evidence ingestion bundle, then PR",
+  "product_readiness_stage": "TDF_DESIGN_CANDIDATE",
+  "prompt_log_updated": true,
+  "raw_data_committed": false,
+  "repository": "https://github.com/bahman2017/tdf-product-artifact-builder",
+  "review_bundle_metadata_mode": "POST_COMMIT_BUNDLE_WITH_SELF_REFERENCE_LIMITATION",
+  "review_zip_path": "project_control/cto_review_packages/20260626_review-safe-external-evidence-ingestion.zip",
+  "task_name": "review-safe-external-evidence-ingestion",
+  "tests_passed": true,
+  "tests_run": "pytest -q"
+}

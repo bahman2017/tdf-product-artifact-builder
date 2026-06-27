@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/evidence_rejection_report.schema.json",
+  "title": "TDF Evidence Rejection Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "source_directory",
+    "rejected_count",
+    "rejected"
+  ],
+  "properties": {
+    "report_version": { "type": "string", "const": "1.0" },
+    "source_directory": { "type": "string", "minLength": 1 },
+    "rejected_count": { "type": "integer", "minimum": 0 },
+    "rejected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relative_path",
+          "reason",
+          "errors"
+        ],
+        "properties": {
+          "relative_path": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "errors": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

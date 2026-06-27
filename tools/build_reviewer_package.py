@@ -32,6 +32,11 @@ def main() -> None:
         default=[],
         help="Optional diagnostic evidence JSON file (repeatable)",
     )
+    parser.add_argument(
+        "--evidence-ingestion-manifest",
+        default=None,
+        help="Optional EVIDENCE_INGESTION_MANIFEST.json from evidence directory ingestion",
+    )
     args = parser.parse_args()
 
     spec_path = Path(args.product_spec)
@@ -39,11 +44,21 @@ def main() -> None:
         print(f"ERROR: product spec not found: {spec_path}", file=sys.stderr)
         sys.exit(1)
 
+    if args.evidence and args.evidence_ingestion_manifest:
+        print("ERROR: provide --evidence or --evidence-ingestion-manifest, not both.", file=sys.stderr)
+        sys.exit(1)
+
+    manifest_path = Path(args.evidence_ingestion_manifest) if args.evidence_ingestion_manifest else None
+    if manifest_path and not manifest_path.is_file():
+        print(f"ERROR: evidence ingestion manifest not found: {manifest_path}", file=sys.stderr)
+        sys.exit(1)
+
     try:
         report = create_reviewer_package(
             spec_path,
             args.output_dir,
             evidence_paths=args.evidence or None,
+            evidence_ingestion_manifest_path=manifest_path,
         )
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

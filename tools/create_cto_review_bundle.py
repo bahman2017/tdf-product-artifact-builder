@@ -42,6 +42,8 @@ REQUIRED_BUNDLE_FILES: tuple[str, ...] = (
     "DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md",
     "TDF_OPENMM_CONTRACT_AUDIT.md",
     "EVIDENCE_MANIFEST_AUDIT.md",
+    "EVIDENCE_INGESTION_AUDIT.md",
+    "EVIDENCE_ACCEPTANCE_REJECTION_AUDIT.md",
     "RELEASE_CHAIN_STATUS_SNAPSHOT.md",
     "ROADMAP_SNAPSHOT.md",
     "COMPLETED_WORK_SNAPSHOT.md",
@@ -290,6 +292,24 @@ def create_cto_review_bundle(
         "- EVIDENCE_MANIFEST.json generated when evidence inputs provided.\n"
         "- Deterministic checksums verified in tests.\n",
     )
+    _write(
+        bundle_dir / "EVIDENCE_INGESTION_AUDIT.md",
+        "# Evidence ingestion audit\n\n"
+        "- Schema: `schemas/evidence_ingestion_manifest.schema.json`\n"
+        "- CLI: `tools/ingest_evidence_directory.py`\n"
+        "- Review-safe directory ingestion only; no network or upstream imports.\n"
+        "- Outputs written to caller-specified directory (typically `/tmp`).\n"
+        "- Required safety flags enforced to false for all accepted evidence.\n",
+    )
+    _write(
+        bundle_dir / "EVIDENCE_ACCEPTANCE_REJECTION_AUDIT.md",
+        "# Evidence acceptance/rejection audit\n\n"
+        "- Schemas: `schemas/evidence_acceptance_report.schema.json`, "
+        "`schemas/evidence_rejection_report.schema.json`\n"
+        "- EVIDENCE_ACCEPTANCE_REPORT.json and EVIDENCE_REJECTION_REPORT.json generated per ingestion.\n"
+        "- Positive simulation/readiness flags and raw coordinate files rejected.\n"
+        "- Non-JSON evidence rejected with clear reasons.\n",
+    )
 
     ci_workflow = REPO_ROOT / ".github" / "workflows" / "ci.yml"
     ci_status_value = "NOT_APPLICABLE_FOR_THIS_TASK"
@@ -363,7 +383,8 @@ def create_cto_review_bundle(
         bundle_dir / "CURSOR_FEEDBACK_SUMMARY.md",
         f"# Cursor feedback summary\n\n"
         f"- Task: {task_name}\n"
-        f"- Integration contract layer for tdf-openmm-validation evidence.\n"
+        f"- Review-safe external evidence ingestion workflow.\n"
+        f"- File-based ingestion only; no runtime upstream integration.\n"
         f"- Engine/product separation enforced.\n"
         f"- No simulation or product package generation.\n",
     )
@@ -395,15 +416,15 @@ def create_cto_review_bundle(
         "review_zip_path": review_zip_rel,
         "known_risks": [
             "CI workflow configured locally; GitHub Actions not yet verified until push",
-            "Evidence contract layer only; no live upstream ingestion yet",
+            "External evidence ingestion is file-based only; no live upstream API calls",
             "Real product package generation still blocked pending CTO approval",
         ] if ci_workflow.is_file() else [
             "No CI workflow yet",
-            "Evidence contract layer only; no live upstream ingestion yet",
+            "External evidence ingestion is file-based only; no live upstream API calls",
             "Real product package generation still blocked pending CTO approval",
         ],
         "blockers": ["CTO review required before push"],
-        "next_recommended_step": "CTO review of integration contract bundle, then PR",
+        "next_recommended_step": "CTO review of evidence ingestion bundle, then PR",
         **provenance,
     }
     validate_review_bundle_provenance(summary)

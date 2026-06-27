@@ -9,3 +9,5 @@
 | 2026-06-27 | Started generic reviewer package builder hardening; deterministic package generation from product specs |
 | 2026-06-27 | PR #3 merged to main (`6976a32`); 65 tests passed; reviewer package generation SUCCESS; Unicode normalized |
 | 2026-06-27 | Started tdf-openmm-validation integration contract layer; schemas and validators only, no execution |
+| 2026-06-27 | PR #4 merged to main (`6f726b9`); 91 tests passed; Unicode cleanup; evidence contract layer complete |
+| 2026-06-27 | Started review-safe external evidence ingestion workflow; file-based directory ingestion only |
