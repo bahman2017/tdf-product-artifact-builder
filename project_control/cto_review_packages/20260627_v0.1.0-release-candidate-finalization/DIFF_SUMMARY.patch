@@ -1,0 +1,67 @@
+commit 952880ac4a77f1f2dcb54062731a1ca298b15f22
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Sat Jun 27 11:03:03 2026 -0700
+
+    Prepare v0.1.0 release candidate
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ CHANGELOG.md                                       |  34 ++++++++
+ project_control/COMPLETED_WORK.md                  |  18 ++++-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   3 +-
+ project_control/NEXT_ACTIONS.md                    |   6 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |   9 ++-
+ ...60627_v0.1.0-release-candidate-finalization.zip | Bin 0 -> 21638 bytes
+ .../CHANGED_FILES.txt                              |  58 ++++++++++++++
+ .../CI_STATUS.md                                   |   7 ++
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 ++
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  86 +++++++++++++++++++++
+ .../CTO_HANDOFF_REPORT.md                          |  14 ++++
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   7 ++
+ .../DECISION_LOG_SNAPSHOT.md                       |  18 +++++
+ .../DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md            |   5 ++
+ .../DIFF_SUMMARY.patch                             |  67 ++++++++++++++++
+ .../EVIDENCE_ACCEPTANCE_REJECTION_AUDIT.md         |   6 ++
+ .../EVIDENCE_INGESTION_AUDIT.md                    |   7 ++
+ .../EVIDENCE_MANIFEST_AUDIT.md                     |   5 ++
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   5 ++
+ .../GIT_LOG.txt                                    |  16 ++++
+ .../GIT_STATUS.txt                                 |  36 +++++++++
+ .../HIDDEN_UNICODE_AUDIT.md                        |   8 ++
+ .../MANIFEST.md                                    |  56 ++++++++++++++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |  10 +++
+ .../NO_RELEASE_ACTIONS_AUDIT.md                    |   5 ++
+ .../PRODUCT_REPORT_SCHEMA_AUDIT.md                 |   5 ++
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  14 ++++
+ .../PROMPT_LOG_SNAPSHOT.md                         |  11 +++
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_BLOCKERS_AUDIT.md                      |   5 ++
+ .../RELEASE_CANDIDATE_AUDIT.md                     |   5 ++
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +++
+ .../RELEASE_NOTES_DRAFT_AUDIT.md                   |   5 ++
+ .../RELEASE_READINESS_AUDIT.md                     |   6 ++
+ .../REVIEWER_MANIFEST_SCHEMA_AUDIT.md              |   6 ++
+ .../REVIEWER_PACKAGE_BUILDER_AUDIT.md              |   8 ++
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  54 +++++++++++++
+ .../REVIEW_SUMMARY.json                            |  35 +++++++++
+ .../ROADMAP_SNAPSHOT.md                            |  86 +++++++++++++++++++++
+ .../STATIC_POLICY_AUDIT.md                         |   7 ++
+ .../TDF_OPENMM_CONTRACT_AUDIT.md                   |   6 ++
+ .../TEST_RESULTS.md                                |   4 +
+ .../NO_TAG_NO_RELEASE_NO_PUBLISH_STATEMENT.md      |  16 ++++
+ .../release_readiness/v0.1.0/RELEASE_BLOCKERS.md   |   7 +-
+ .../v0.1.0/RELEASE_CANDIDATE_CHECKLIST.md          |  39 ++++++++++
+ .../v0.1.0/RELEASE_NOTES_DRAFT.md                  |  38 +++++++++
+ .../v0.1.0/RELEASE_READINESS_REPORT.json           |  38 ++++++---
+ .../v0.1.0/RELEASE_READINESS_REPORT.md             |  24 ++++--
+ pyproject.toml                                     |   2 +-
+ schemas/release_readiness_report.schema.json       |  19 ++++-
+ .../release_readiness.py                           |  73 ++++++++++++++---
+ src/tdf_product_artifact_builder/version.py        |   2 +-
+ tests/test_release_candidate_readiness.py          |  29 +++++++
+ tests/test_release_readiness_audit.py              |   5 ++
+ tools/create_cto_review_bundle.py                  |  28 +++++--
+ 58 files changed, 1039 insertions(+), 48 deletions(-)

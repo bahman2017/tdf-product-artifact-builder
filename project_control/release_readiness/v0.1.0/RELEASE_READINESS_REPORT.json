@@ -1,8 +1,12 @@
 {
-  "base_commit": "5ca67ccf731d059b3dd8eb0bb619fe5ff6974827",
+  "base_commit": "e46844919cc7adc9bf4aafb5aeecb6ba6f8d0c8a",
   "checks": {
     "ascii_policy_status": {
       "detail": "Reviewer-facing tracked text is ASCII-only",
+      "status": "PASS"
+    },
+    "changelog_status": {
+      "detail": "All 1 required files present",
       "status": "PASS"
     },
     "claim_boundary_status": {
@@ -25,6 +29,14 @@
       "detail": "No untracked-policy generated outputs committed",
       "status": "PASS"
     },
+    "no_tag_exists_status": {
+      "detail": "No local release tag exists",
+      "status": "PASS"
+    },
+    "no_tag_no_publish_statement_status": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
     "package_metadata": {
       "detail": "Package metadata present in pyproject.toml and README.md",
       "status": "PASS"
@@ -37,8 +49,16 @@
       "detail": "Reference product spec remains TDF_DESIGN_CANDIDATE with safety flags false",
       "status": "PASS"
     },
+    "release_candidate_checklist_status": {
+      "detail": "All 1 required files present",
+      "status": "PASS"
+    },
     "release_chain_status": {
       "detail": "Release chain status documents current package state",
+      "status": "PASS"
+    },
+    "release_notes_draft_status": {
+      "detail": "All 1 required files present",
       "status": "PASS"
     },
     "required_clis_present": {
@@ -70,30 +90,30 @@
       "status": "PASS"
     },
     "tests_passed_status": {
-      "detail": "112 passed in 8.96s",
+      "detail": "112 passed, 1 skipped in 9.70s",
       "status": "PASS"
     },
     "version_consistency": {
-      "detail": "Versions aligned with target 0.1.0: __version__=0.1.0-dev, pyproject=0.1.0.dev0",
+      "detail": "Versions aligned with target 0.1.0: __version__=0.1.0, pyproject=0.1.0",
       "status": "PASS"
     }
   },
-  "generated_at_commit": "4eefc3ccd3caf520677519339c3595296ad340c7",
+  "generated_at_commit": "6d1f8b31607e3d4fbfb1a77f62faed2722e5c00f",
   "github_release_created": false,
-  "known_blockers": [
-    "Package version remains 0.1.0-dev; bump to 0.1.0 required before release",
+  "governance_notes": [
     "CTO review required before tag, GitHub release, or package publish",
     "Real product package generation blocked pending CTO approval",
     "Runtime integration with tdf-openmm-validation blocked"
   ],
+  "known_blockers": [],
   "lammps_executed": false,
   "openmm_executed": false,
   "package_published": false,
-  "package_version": "0.1.0-dev",
-  "pyproject_version": "0.1.0.dev0",
+  "package_version": "0.1.0",
+  "pyproject_version": "0.1.0",
   "readiness_stage_upgraded": false,
   "release_action_taken": false,
-  "release_readiness_decision": "CTO_REVIEW_REQUIRED",
+  "release_readiness_decision": "READY_FOR_RELEASE_DRAFT",
   "report_version": "1.0",
   "repository": "https://github.com/bahman2017/tdf-product-artifact-builder",
   "runtime_tdf_openmm_validation_import": false,

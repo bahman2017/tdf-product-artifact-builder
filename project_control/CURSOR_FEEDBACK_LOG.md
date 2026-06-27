@@ -13,3 +13,5 @@
 | 2026-06-27 | Started review-safe external evidence ingestion workflow; file-based directory ingestion only |
 | 2026-06-27 | PR #5 merged to main (`5ca67cc`); 105 tests passed; external evidence ingestion complete |
 | 2026-06-27 | Started v0.1.0 release-readiness audit; audit-only, no tag/release/publish |
+| 2026-06-27 | PR #6 merged to main (`e468449`); 112 tests passed; release-readiness audit `CTO_REVIEW_REQUIRED` |
+| 2026-06-27 | Started v0.1.0 release-candidate finalization; version bump to 0.1.0, release docs, no tag/release/publish |

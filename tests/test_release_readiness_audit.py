@@ -63,5 +63,10 @@ def test_all_required_checks_present(tmp_path) -> None:
         "external_evidence_ingestion_status",
         "claim_boundary_status",
         "release_chain_status",
+        "changelog_status",
+        "release_notes_draft_status",
+        "release_candidate_checklist_status",
+        "no_tag_no_publish_statement_status",
+        "no_tag_exists_status",
     }
     assert expected == set(report.payload["checks"].keys())

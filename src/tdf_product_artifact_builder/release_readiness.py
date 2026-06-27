@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -78,6 +79,19 @@ def _reference_product_spec_path(repo_root: Path) -> Path:
             return repo_root / rel
     raise ValueError("Reference product spec path not found in PRODUCT_SPEC_REGISTRY.md")
 
+REQUIRED_RELEASE_CANDIDATE_FILES: tuple[str, ...] = (
+    "CHANGELOG.md",
+    "project_control/release_readiness/v0.1.0/RELEASE_NOTES_DRAFT.md",
+    "project_control/release_readiness/v0.1.0/RELEASE_CANDIDATE_CHECKLIST.md",
+    "project_control/release_readiness/v0.1.0/NO_TAG_NO_RELEASE_NO_PUBLISH_STATEMENT.md",
+)
+
+GOVERNANCE_NOTES: tuple[str, ...] = (
+    "CTO review required before tag, GitHub release, or package publish",
+    "Real product package generation blocked pending CTO approval",
+    "Runtime integration with tdf-openmm-validation blocked",
+)
+
 FORBIDDEN_DECISION_PHRASES = (
     "APPROVED TO PUBLISH",
     "APPROVED TO RELEASE",
@@ -128,12 +142,15 @@ def _git_head_commit(repo_root: Path) -> str:
 
 
 def _run_pytest(repo_root: Path) -> tuple[bool, str]:
+    env = os.environ.copy()
+    env["TDF_RELEASE_READINESS_NESTED_PYTEST"] = "1"
     result = subprocess.run(
         ["python3", "-m", "pytest", "-q"],
         cwd=repo_root,
         capture_output=True,
         text=True,
         check=False,
+        env=env,
     )
     output = (result.stdout or "") + (result.stderr or "")
     passed = result.returncode == 0
@@ -363,6 +380,15 @@ def _check_cto_bundle_requirements(repo_root: Path) -> CheckResult:
     return CheckResult("PASS", "CTO review bundle requirements documented and referenced")
 
 
+def _check_no_tag_exists(repo_root: Path, target_version: str) -> CheckResult:
+    tags = subprocess.check_output(["git", "tag", "-l"], cwd=repo_root, text=True).splitlines()
+    release_tags = {target_version, f"v{target_version}"}
+    hits = [tag for tag in tags if tag in release_tags]
+    if hits:
+        return CheckResult("FAIL", f"Release tag already exists: {', '.join(hits)}")
+    return CheckResult("PASS", "No local release tag exists")
+
+
 def _derive_decision(
     checks: dict[str, CheckResult],
     known_blockers: list[str],
@@ -386,12 +412,13 @@ def _build_known_blockers(
             blockers.append(f"{name}: {result.detail}")
     if package_version != target_version:
         blockers.append(
-            f"Package version remains {package_version}; bump to {target_version} required before release"
+            f"Package version is {package_version}; expected {target_version} for release draft"
         )
-    blockers.append("CTO review required before tag, GitHub release, or package publish")
-    blockers.append("Real product package generation blocked pending CTO approval")
-    blockers.append("Runtime integration with tdf-openmm-validation blocked")
     return blockers
+
+
+def _build_governance_notes() -> list[str]:
+    return list(GOVERNANCE_NOTES)
 
 
 def _build_markdown(payload: dict[str, Any]) -> str:
@@ -423,13 +450,23 @@ def _build_markdown(payload: dict[str, Any]) -> str:
     for name, result in payload["checks"].items():
         lines.append(f"| {name} | {result['status']} | {result['detail']} |")
     lines.extend(["", "## Known blockers", ""])
-    for blocker in payload["known_blockers"]:
-        lines.append(f"- {blocker}")
+    if payload["known_blockers"]:
+        for blocker in payload["known_blockers"]:
+            lines.append(f"- {blocker}")
+    else:
+        lines.append("- None.")
+    lines.extend(["", "## Governance notes (post-draft approval still required)", ""])
+    for note in payload.get("governance_notes", []):
+        lines.append(f"- {note}")
     lines.append("")
     return "\n".join(lines)
 
 
-def _build_blockers_md(known_blockers: list[str], decision: ReleaseDecision) -> str:
+def _build_blockers_md(
+    known_blockers: list[str],
+    governance_notes: list[str],
+    decision: ReleaseDecision,
+) -> str:
     lines = [
         "# Release blockers",
         "",
@@ -441,6 +478,9 @@ def _build_blockers_md(known_blockers: list[str], decision: ReleaseDecision) -> 
             lines.append(f"- {blocker}")
     else:
         lines.append("- No blockers recorded.")
+    lines.extend(["", "## Governance notes", ""])
+    for note in governance_notes:
+        lines.append(f"- {note}")
     lines.append("")
     return "\n".join(lines)
 
@@ -512,6 +552,20 @@ def run_release_readiness_audit(
         "external_evidence_ingestion_status": _check_external_evidence_ingestion(repo_root),
         "claim_boundary_status": _check_claim_boundary(repo_root),
         "release_chain_status": _check_release_chain_status(repo_root),
+        "changelog_status": _check_files_present(repo_root, ("CHANGELOG.md",)),
+        "release_notes_draft_status": _check_files_present(
+            repo_root,
+            ("project_control/release_readiness/v0.1.0/RELEASE_NOTES_DRAFT.md",),
+        ),
+        "release_candidate_checklist_status": _check_files_present(
+            repo_root,
+            ("project_control/release_readiness/v0.1.0/RELEASE_CANDIDATE_CHECKLIST.md",),
+        ),
+        "no_tag_no_publish_statement_status": _check_files_present(
+            repo_root,
+            ("project_control/release_readiness/v0.1.0/NO_TAG_NO_RELEASE_NO_PUBLISH_STATEMENT.md",),
+        ),
+        "no_tag_exists_status": _check_no_tag_exists(repo_root, target_version),
     }
 
     known_blockers = _build_known_blockers(
@@ -519,7 +573,7 @@ def run_release_readiness_audit(
         package_version=package_version,
         target_version=target_version,
     )
-    # Remove duplicate blockers from failed checks already listed
+    governance_notes = _build_governance_notes()
     decision = _derive_decision(checks, known_blockers)
 
     payload: dict[str, Any] = {
@@ -541,6 +595,7 @@ def run_release_readiness_audit(
         "readiness_stage_upgraded": False,
         "checks": {name: result.to_dict() for name, result in checks.items()},
         "known_blockers": known_blockers,
+        "governance_notes": governance_notes,
         "release_readiness_decision": decision,
         "generated_at_commit": generated_at_commit,
     }
@@ -554,7 +609,7 @@ def run_release_readiness_audit(
     return ReleaseReadinessReport(
         payload=payload,
         markdown=_build_markdown(payload),
-        blockers_md=_build_blockers_md(known_blockers, decision),
+        blockers_md=_build_blockers_md(known_blockers, governance_notes, decision),
         no_release_actions_md=_build_no_release_actions_md(),
     )
 

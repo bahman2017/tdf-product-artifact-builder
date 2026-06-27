@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tdf-product-artifact-builder"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Generic reviewer-facing product artifact builder for TDF-chain outputs"
 readme = "README.md"
 license = { text = "MIT" }
