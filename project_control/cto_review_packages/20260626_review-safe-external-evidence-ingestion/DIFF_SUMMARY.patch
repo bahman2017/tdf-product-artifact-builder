@@ -1,0 +1,78 @@
+commit 792a22b27a5efa7807bdaaee73db2514b3bce684
+Author: bahman2017 <bmasarrat@gmail.com>
+Date:   Fri Jun 26 20:08:19 2026 -0700
+
+    Add review-safe external evidence ingestion
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ project_control/COMPLETED_WORK.md                  |  22 +-
+ project_control/CURSOR_FEEDBACK_LOG.md             |   2 +
+ project_control/DECISION_LOG.md                    |   2 +
+ project_control/NEXT_ACTIONS.md                    |   9 +-
+ project_control/PROMPT_LOG.md                      |   1 +
+ project_control/RELEASE_CHAIN_STATUS.md            |   2 +-
+ project_control/ROADMAP.md                         |  12 +-
+ ...626_review-safe-external-evidence-ingestion.zip | Bin 0 -> 19158 bytes
+ .../CHANGED_FILES.txt                              |  69 ++++++
+ .../CI_STATUS.md                                   |   7 +
+ .../CLAIM_BOUNDARY_AUDIT.md                        |   5 +
+ .../COMPLETED_WORK_SNAPSHOT.md                     |  65 ++++++
+ .../CTO_HANDOFF_REPORT.md                          |  14 ++
+ .../CURSOR_FEEDBACK_SUMMARY.md                     |   7 +
+ .../DECISION_LOG_SNAPSHOT.md                       |  15 ++
+ .../DIAGNOSTIC_EVIDENCE_SCHEMA_AUDIT.md            |   5 +
+ .../DIFF_SUMMARY.patch                             |  78 +++++++
+ .../EVIDENCE_ACCEPTANCE_REJECTION_AUDIT.md         |   6 +
+ .../EVIDENCE_INGESTION_AUDIT.md                    |   7 +
+ .../EVIDENCE_MANIFEST_AUDIT.md                     |   5 +
+ .../GENERATED_OUTPUTS_AUDIT.md                     |   5 +
+ .../GIT_LOG.txt                                    |  13 ++
+ .../GIT_STATUS.txt                                 |  31 +++
+ .../HIDDEN_UNICODE_AUDIT.md                        |   8 +
+ .../MANIFEST.md                                    |  51 +++++
+ .../NEXT_ACTIONS_SNAPSHOT.md                       |  10 +
+ .../PRODUCT_REPORT_SCHEMA_AUDIT.md                 |   5 +
+ .../PRODUCT_SPEC_REGISTRY_SNAPSHOT.md              |  14 ++
+ .../PROMPT_LOG_SNAPSHOT.md                         |   9 +
+ .../RAW_DATA_AUDIT.md                              |   4 +
+ .../RELEASE_CHAIN_STATUS_SNAPSHOT.md               |  10 +
+ .../REVIEWER_MANIFEST_SCHEMA_AUDIT.md              |   6 +
+ .../REVIEWER_PACKAGE_BUILDER_AUDIT.md              |   8 +
+ .../REVIEW_ARTIFACTS_INDEX.md                      |  49 ++++
+ .../REVIEW_SUMMARY.json                            |  35 +++
+ .../ROADMAP_SNAPSHOT.md                            |  67 ++++++
+ .../STATIC_POLICY_AUDIT.md                         |   7 +
+ .../TDF_OPENMM_CONTRACT_AUDIT.md                   |   6 +
+ .../TEST_RESULTS.md                                |   4 +
+ schemas/evidence_acceptance_report.schema.json     |  66 ++++++
+ schemas/evidence_ingestion_manifest.schema.json    |  76 +++++++
+ schemas/evidence_rejection_report.schema.json      |  38 ++++
+ .../evidence_acceptance.py                         |  46 ++++
+ .../evidence_ingestion.py                          | 249 +++++++++++++++++++++
+ .../evidence_ingestion_manifest.py                 |  60 +++++
+ .../evidence_rejection.py                          |  41 ++++
+ .../reviewer_package.py                            |  16 +-
+ .../evidence_directory_invalid/missing_fields.json |   4 +
+ .../simulation_executed_true.json                  |  17 ++
+ .../evidence_directory_mixed/diagnostic_valid.json |  19 ++
+ .../evidence_directory_mixed/malformed.json        |   1 +
+ .../review_safe/evidence_directory_mixed/notes.txt |   1 +
+ .../simulation_flag_true.json                      |  17 ++
+ .../diagnostic_primary.json                        |  20 ++
+ .../diagnostic_secondary.json                      |  20 ++
+ tests/test_evidence_acceptance_report.py           |  34 +++
+ tests/test_evidence_ingestion_determinism.py       |  18 ++
+ tests/test_evidence_ingestion_manifest.py          |  23 ++
+ ...st_evidence_ingestion_rejects_positive_flags.py |  23 ++
+ tests/test_evidence_ingestion_rejects_raw_files.py |  21 ++
+ tests/test_evidence_ingestion_schema.py            |  26 +++
+ tests/test_evidence_ingestion_workflow.py          |  38 ++++
+ tests/test_evidence_rejection_report.py            |  31 +++
+ tests/test_ingest_evidence_directory_tool.py       |  30 +++
+ ...est_reviewer_package_from_ingestion_manifest.py |  29 +++
+ tools/build_reviewer_package.py                    |  15 ++
+ tools/create_cto_review_bundle.py                  |  29 ++-
+ tools/ingest_evidence_directory.py                 |  55 +++++
+ tools/static_policy_audit.py                       |  18 ++
+ 69 files changed, 1738 insertions(+), 18 deletions(-)

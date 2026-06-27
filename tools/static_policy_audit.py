@@ -77,9 +77,20 @@ EXECUTION_SCAN_ALLOWLIST_PREFIXES = (
     "tests/",
     "tools/static_policy_audit.py",
     "tools/validate_diagnostic_evidence.py",
+    "tools/ingest_evidence_directory.py",
     "project_control/",
     "schemas/",
 )
+
+TRACKED_EVIDENCE_OUTPUT_NAMES = frozenset(
+    {
+        "EVIDENCE_ACCEPTANCE_REPORT.json",
+        "EVIDENCE_REJECTION_REPORT.json",
+        "EVIDENCE_INGESTION_MANIFEST.json",
+    }
+)
+
+REVIEW_SAFE_FIXTURE_PREFIX = "tests/fixtures/review_safe/"
 
 EXECUTION_LINE_ALLOW_MARKERS = (
     "no ",
@@ -235,6 +246,13 @@ def audit_tracked_files(repo_root: Path | None = None) -> AuditReport:
 
         if path.suffix.lower() in RAW_COORDINATE_SUFFIXES:
             report.add("raw_coordinates", rel, f"forbidden suffix {path.suffix.lower()}")
+
+        if path.name in TRACKED_EVIDENCE_OUTPUT_NAMES and not rel.startswith(REVIEW_SAFE_FIXTURE_PREFIX):
+            report.add(
+                "generated_evidence_outputs",
+                rel,
+                "tracked evidence ingestion output outside tests/fixtures/review_safe/",
+            )
 
         for marker in FORBIDDEN_PATH_MARKERS:
             if marker in rel_lower.split("/") or name_lower == marker.lstrip("."):

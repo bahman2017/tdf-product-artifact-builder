@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bahman2017/tdf-product-artifact-builder/schemas/evidence_acceptance_report.schema.json",
+  "title": "TDF Evidence Acceptance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "source_directory",
+    "accepted_count",
+    "accepted",
+    "diagnostic_flags",
+    "simulation_authorized",
+    "wet_lab_ready"
+  ],
+  "properties": {
+    "report_version": { "type": "string", "const": "1.0" },
+    "source_directory": { "type": "string", "minLength": 1 },
+    "accepted_count": { "type": "integer", "minimum": 0 },
+    "accepted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relative_path",
+          "evidence_id",
+          "source_tool",
+          "source_version",
+          "evidence_type",
+          "file_sha256",
+          "payload_sha256"
+        ],
+        "properties": {
+          "relative_path": { "type": "string", "minLength": 1 },
+          "evidence_id": { "type": "string", "minLength": 1 },
+          "source_tool": { "type": "string", "minLength": 1 },
+          "source_version": { "type": "string", "minLength": 1 },
+          "evidence_type": { "type": "string", "minLength": 1 },
+          "file_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "payload_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "diagnostic_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lammps_input_executed",
+        "simulation_executed",
+        "accepted_for_simulation",
+        "force_field_ready",
+        "wet_lab_ready"
+      ],
+      "properties": {
+        "lammps_input_executed": { "type": "boolean", "const": false },
+        "simulation_executed": { "type": "boolean", "const": false },
+        "accepted_for_simulation": { "type": "boolean", "const": false },
+        "force_field_ready": { "type": "boolean", "const": false },
+        "wet_lab_ready": { "type": "boolean", "const": false }
+      }
+    },
+    "simulation_authorized": { "type": "boolean", "const": false },
+    "wet_lab_ready": { "type": "boolean", "const": false }
+  }
+}

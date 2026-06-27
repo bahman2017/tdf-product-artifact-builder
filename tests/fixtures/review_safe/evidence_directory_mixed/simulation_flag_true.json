@@ -1,0 +1,17 @@
+{
+  "evidence_id": "external-evidence-mixed-invalid-v1",
+  "evidence_type": "diagnostic_preparation_report",
+  "source_tool": "tdf-openmm-validation",
+  "source_version": "1.0.0",
+  "diagnostic_passed": true,
+  "lammps_input_executed": false,
+  "simulation_executed": true,
+  "accepted_for_simulation": false,
+  "force_field_ready": false,
+  "wet_lab_ready": false,
+  "claim_boundary_passed": true,
+  "diagnostic_summary": "Invalid positive simulation flag fixture.",
+  "limitations": [
+    "Must be rejected by ingestion workflow."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "evidence_id": "external-evidence-secondary-fixture-v1",
+  "evidence_type": "diagnostic_preparation_report",
+  "source_tool": "tdf-openmm-validation",
+  "source_version": "1.0.0",
+  "source_repository": "https://github.com/bahman2017/tdf-openmm-validation",
+  "source_commit": "874ef6190847d14a4c4c649a4a1849a67eaf0c93",
+  "diagnostic_passed": true,
+  "lammps_input_executed": false,
+  "simulation_executed": false,
+  "accepted_for_simulation": false,
+  "force_field_ready": false,
+  "wet_lab_ready": false,
+  "claim_boundary_passed": true,
+  "diagnostic_summary": "Secondary review-safe external evidence fixture. Metadata only.",
+  "limitations": [
+    "External ingestion fixture only.",
+    "No readiness stage upgrade implied."
+  ]
+}

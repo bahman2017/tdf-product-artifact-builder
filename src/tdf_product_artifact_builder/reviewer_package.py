@@ -25,6 +25,7 @@ from tdf_product_artifact_builder.product_spec import load_product_spec, validat
 from tdf_product_artifact_builder.reproducibility import build_reproducibility_md
 from tdf_product_artifact_builder.diagnostic_evidence import build_diagnostic_evidence_summary_md
 from tdf_product_artifact_builder.evidence_adapter import validate_and_adapt_evidence
+from tdf_product_artifact_builder.evidence_ingestion import resolve_evidence_paths_from_ingestion_manifest
 from tdf_product_artifact_builder.evidence_manifest import build_evidence_manifest, validate_evidence_manifest
 from tdf_product_artifact_builder.version import __version__
 
@@ -274,6 +275,7 @@ def create_reviewer_package(
     output_dir: str | Path,
     *,
     evidence_paths: list[str | Path] | None = None,
+    evidence_ingestion_manifest_path: str | Path | None = None,
 ) -> ReviewerPackageReport:
     """Create a deterministic reviewer package directory from a product spec."""
     spec_path = Path(product_spec_path)
@@ -297,9 +299,19 @@ def create_reviewer_package(
     if not claim_report.passed:
         raise ValueError(f"Claim boundary validation failed: {claim_report.forbidden_hits}")
 
+    resolved_evidence_paths: list[Path] = []
+    if evidence_ingestion_manifest_path:
+        if evidence_paths:
+            raise ValueError("Provide --evidence or --evidence-ingestion-manifest, not both.")
+        resolved_evidence_paths = resolve_evidence_paths_from_ingestion_manifest(
+            evidence_ingestion_manifest_path
+        )
+    elif evidence_paths:
+        resolved_evidence_paths = [Path(path) for path in evidence_paths]
+
     evidence_payloads: list[dict[str, Any]] = []
-    if evidence_paths:
-        for evidence_path in evidence_paths:
+    if resolved_evidence_paths:
+        for evidence_path in resolved_evidence_paths:
             evidence_payloads.append(validate_and_adapt_evidence(evidence_path))
 
     files_written = _write_content_files(out, spec, evidence_payloads=evidence_payloads or None)
